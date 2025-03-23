@@ -1,19 +1,19 @@
 ﻿namespace LowlandTech.Vylyr.Core.ViewModels;
 
 /// <summary>
-/// Manages global application state such as theme, drawer visibility, and navigational menu stack.
+/// Application-wide ViewModel managing theme, drawer, and navigation state.
 /// </summary>
-public class AppVm
+public partial class AppVm : ObservableObject
 {
-    /// <summary>
-    /// Occurs when general application state changes (e.g. theme, drawer).
-    /// </summary>
-    public event Action? OnChange;
+    // ============================
+    // Theme & UI State
+    // ============================
 
-    /// <summary>
-    /// Occurs when the navigation menu stack changes.
-    /// </summary>
-    public event Action? OnMenuChange;
+    [ObservableProperty]
+    private bool _drawerOpen;
+
+    [ObservableProperty]
+    private bool _isDarkMode = true;
 
     /// <summary>
     /// Gets the current MudBlazor theme.
@@ -56,85 +56,34 @@ public class AppVm
             TableLines = "#33323e",
             Divider = "#292838",
             OverlayLight = "#1e1e2d80",
-        }
+        },
     };
 
-    private bool _drawerOpen = false;
-    private bool _isDarkMode = true;
+    // ============================
+    // Navigation Stack
+    // ============================
 
-    /// <summary>
-    /// Gets or sets whether the side drawer is open.
-    /// </summary>
-    public bool DrawerOpen
-    {
-        get => _drawerOpen;
-        set
-        {
-            if (_drawerOpen != value)
-            {
-                _drawerOpen = value;
-                NotifyStateChanged();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets whether the app is in dark mode.
-    /// </summary>
-    public bool IsDarkMode => _isDarkMode;
-
-    /// <summary>
-    /// Toggles the side drawer open/close.
-    /// </summary>
-    public void ToggleDrawer()
-    {
-        _drawerOpen = !_drawerOpen;
-        NotifyStateChanged();
-    }
-
-    /// <summary>
-    /// Closes the side drawer.
-    /// </summary>
-    public void CloseDrawer()
-    {
-        if (_drawerOpen)
-        {
-            _drawerOpen = false;
-            NotifyStateChanged();
-        }
-    }
-
-    /// <summary>
-    /// Toggles between light and dark themes.
-    /// </summary>
-    public void ToggleDarkMode()
-    {
-        _isDarkMode = !_isDarkMode;
-        NotifyStateChanged();
-    }
-
-    private void NotifyStateChanged() => OnChange?.Invoke();
-
-    private readonly List<GraphNode> _navStack = [];
     private GraphNode? _user;
 
     /// <summary>
-    /// Gets the current navigation stack.
+    /// Navigation stack of the menu.
     /// </summary>
-    public IReadOnlyList<GraphNode> NavStack => _navStack;
+    public ObservableCollection<GraphNode> NavStack { get; } = new();
 
     /// <summary>
-    /// Gets the currently selected node.
+    /// Gets the current node (top of the stack).
     /// </summary>
-    public GraphNode? CurrentNode => _navStack.LastOrDefault();
+    public GraphNode? CurrentNode => NavStack.LastOrDefault();
 
     /// <summary>
-    /// Gets a value indicating whether the navigation stack has a previous item (i.e., can go back).
+    /// Whether the nav stack has previous nodes (can go back).
     /// </summary>
-    public bool HasBack => _navStack.Count > 1;
+    public bool HasBack => NavStack.Count > 1;
+
+    public event Action? OnMenuChange;
 
     /// <summary>
-    /// Initializes the navigation menu by loading the root user node from the database.
+    /// Initializes the navigation menu from database.
     /// </summary>
     public async Task InitMenuAsync(GraphContext db)
     {
@@ -144,48 +93,65 @@ public class AppVm
 
         if (_user is not null)
         {
-            _navStack.Clear();
-            _navStack.Add(_user);
-            NotifyMenuChanged();
+            NavStack.Clear();
+            NavStack.Add(_user);
+            OnMenuChange?.Invoke();
         }
     }
 
     /// <summary>
-    /// Pushes a new node onto the navigation stack.
+    /// Pushes a new node onto the stack.
     /// </summary>
-    /// <param name="node">The node to navigate into.</param>
+    [RelayCommand]
     public void PushNode(GraphNode? node)
     {
         if (node is null) return;
-
-        _navStack.Add(node);
-        NotifyMenuChanged();
+        NavStack.Add(node);
+        OnMenuChange?.Invoke();
     }
 
     /// <summary>
-    /// Pops the last node off the navigation stack.
+    /// Pops one level from the stack.
     /// </summary>
+    [RelayCommand]
     public void PopNode()
     {
-        if (_navStack.Count > 1)
+        if (NavStack.Count > 1)
         {
-            _navStack.RemoveAt(_navStack.Count - 1);
-            NotifyMenuChanged();
+            NavStack.RemoveAt(NavStack.Count - 1);
+            OnMenuChange?.Invoke();
         }
     }
 
     /// <summary>
-    /// Resets the navigation menu to the root user node.
+    /// Resets the stack to the user root node.
     /// </summary>
+    [RelayCommand]
     public void ResetMenu()
     {
-        _navStack.Clear();
-
+        NavStack.Clear();
         if (_user is not null)
-            _navStack.Add(_user);
-
-        NotifyMenuChanged();
+        {
+            NavStack.Add(_user);
+            OnMenuChange?.Invoke();
+        }
     }
 
-    private void NotifyMenuChanged() => OnMenuChange?.Invoke();
+    /// <summary>
+    /// Toggles the theme mode.
+    /// </summary>
+    [RelayCommand]
+    public void ToggleDarkMode() => IsDarkMode = !IsDarkMode;
+
+    /// <summary>
+    /// Toggles the drawer.
+    /// </summary>
+    [RelayCommand]
+    public void ToggleDrawer() => DrawerOpen = !DrawerOpen;
+
+    /// <summary>
+    /// Closes the drawer.
+    /// </summary>
+    [RelayCommand]
+    public void CloseDrawer() => DrawerOpen = false;
 }
