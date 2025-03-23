@@ -1,25 +1,51 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
+<MudThemeProvider Theme="@_theme" IsDarkMode="@_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+
+    <MudAppBar Elevation="1" Dense="true">
+        <MudIconButton 
+            Icon="@Icons.Material.Filled.Menu"
+            Color="Color.Inherit"
+            Edge="Edge.Start"
+            OnClick="@DrawerToggle" />
+        <MudText Typo="Typo.h5" Class="ml-3">Vylyr</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton 
+            Icon="@DarkLightModeButtonIcon" 
+            Color="Color.Inherit" 
+            OnClick="@DarkModeToggle" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+
+    <MudDrawer @bind-Open="@_drawerOpen"
+        Elevation="2"
+        Class="mud-drawer-custom"
+        ClipMode="DrawerClipMode.Always">
         <NavMenu />
     </MudDrawer>
+
     <MudMainContent Class="mt-16 pa-4">
         @Body
     </MudMainContent>
+
 </MudLayout>
 
+<style>
+    @@media (max-width: 960px) {
+        .mud-drawer-custom.mud-drawer--open {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .mud-drawer-custom.mud-drawer--close {
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+    }
+</style>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -28,14 +54,12 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen = false;
     private bool _isDarkMode = true;
     private MudTheme? _theme = null;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-
         _theme = new()
         {
             PaletteLight = _lightPalette,
@@ -43,7 +67,6 @@
             LayoutProperties = new LayoutProperties()
         };
     }
-
 
     private void DrawerToggle()
     {
@@ -94,11 +117,7 @@
         OverlayLight = "#1e1e2d80",
     };
 
-    public string DarkLightModeButtonIcon => _isDarkMode switch
-    {
-        true => Icons.Material.Rounded.AutoMode,
-        false => Icons.Material.Outlined.DarkMode,
-    };
+    public string DarkLightModeButtonIcon => _isDarkMode
+        ? Icons.Material.Rounded.AutoMode
+        : Icons.Material.Outlined.DarkMode;
 }
-
-
