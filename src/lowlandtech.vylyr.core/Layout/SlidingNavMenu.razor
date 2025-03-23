@@ -7,11 +7,12 @@
         <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (App.NavStack.Count - 1))%);">
             @for (int i = 0; i < App.NavStack.Count; i++)
             {
-                <MenuPanel CurrentNode="App.NavStack[i]"
-                           OnNavigate="App.PushNode"
-                           OnBack="App.PopNode"
-                           OnClose="App.CloseDrawer"
-                           ShowBack="@(i > 0)" />
+                <MenuPanel 
+                    CurrentNode="App.NavStack[i]"
+                    OnNavigate="App.PushNode"
+                    OnBack="App.PopNode"
+                    OnClose="App.CloseDrawer"
+                    ShowBack="@(i > 0)" />
             }
         </div>
     </MudPaper>
@@ -22,14 +23,18 @@ else
 }
 
 @code {
+
     protected override async Task OnInitializedAsync()
     {
-        App.OnMenuChange += StateHasChanged;
+        App.OnChange += ()=> InvokeAsync(StateHasChanged);
+        App.OnMenuChange += ()=> InvokeAsync(StateHasChanged);
         await App.InitMenuAsync(Db);
     }
 
     public void Dispose()
     {
-        App.OnMenuChange -= StateHasChanged;
+        App.OnChange -= () => InvokeAsync(StateHasChanged);
+        App.OnMenuChange -= () => InvokeAsync(StateHasChanged);
     }
+
 }

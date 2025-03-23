@@ -12,11 +12,12 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
-        builder.Services.AddDbContext<GraphContext>(options =>
-        {
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "graph.db");
-            options.UseSqlite($"Data Source={dbPath}");
-        });
+        builder
+            .Services
+            .AddDbContext<GraphContext>(options =>
+            {
+                options.UseInMemoryDatabase("VylyrGraph");
+            });
 
         // Add device-specific services used by the LowlandTech.Vylyr.Core project
         builder.Services.AddSingleton<IFormFactor, FormFactor>();

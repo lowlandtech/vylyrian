@@ -25,10 +25,11 @@
             {
                 <MudListItem OnClick="() => TryNavigate(child)" Class="pr-6">
                     <div style="display: flex; align-items: center; width: 100%;">
+                        <MudIcon Icon="@child.Type.Icon" />
                         <MudText>@child.Title</MudText>
                         @if (child.ChildCount > 0)
                         {
-                            <MudBadge Class="mt-4" Content="@child.ChildCount" Color="Color.Primary" Style="margin-left: auto;" />
+                            <MudBadge Class="mt-4" Content="@child.ChildCount" Color="Color.Primary" Style="margin-left: auto;"/>
                         }
                     </div>
                 </MudListItem>
@@ -51,7 +52,7 @@
         _children = await Db.Edges
             .Where(e => e.FromId == CurrentNode.Id)
             .Select(e => e.To)
-            .Where(n => n.Type == "list")
+            .Where(n => n.TypeId == "list")
             .Select(n => new GraphNodeWithCount
             {
                 Id = n.Id,

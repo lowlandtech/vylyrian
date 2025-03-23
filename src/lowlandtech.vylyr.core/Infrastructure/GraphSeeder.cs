@@ -4,20 +4,66 @@ public static class GraphSeeder
 {
     public static async Task UseCaseData(this GraphContext db)
     {
-        if (await db.Nodes.AnyAsync()) return;
+        try
+        {
+            if (!await db.NodeTypes.AnyAsync())
+            {
+                db.NodeTypes.AddRange(
+                    new NodeType
+                    {
+                        Id = "users", Label = "Users", Icon = 
+                            Icons.Material.Filled.List, ComponentName = "UserView"
+                    },
+                    new NodeType
+                    {
+                        Id = "list", Label = "List", 
+                        Icon = Icons.Material.Filled.List, ComponentName = "ListView"
+                    },
+                    new NodeType
+                    {
+                        Id = "action", Label = "Action", 
+                        Icon = Icons.Material.Filled.FlashOn,
+                        ComponentName = "ActionView"
+                    },
+                    new NodeType
+                    {
+                        Id = "report", Label = "Report", 
+                        Icon = Icons.Material.Filled.Assessment,
+                        ComponentName = "ReportView"
+                    }
+                );
 
-        var user = new GraphNode { Id = "user", Title = "User", Type = "user" };
-        var list1 = new GraphNode { Id = "l1", Title = "Projects", Type = "list" };
-        var list2 = new GraphNode { Id = "l2", Title = "Tasks", Type = "list" };
-        var list3 = new GraphNode { Id = "l3", Title = "Completed", Type = "list" };
+                // Save the types first to establish relationships
+                await db.SaveChangesAsync();
+            }
 
-        db.Nodes.AddRange(user, list1, list2, list3);
-        db.Edges.AddRange(
-            new GraphEdge { From = user, To = list1 },
-            new GraphEdge { From = list1, To = list2 },
-            new GraphEdge { From = list2, To = list3 }
-        );
+            if (!await db.Nodes.AnyAsync())
+            {
+                // Seed GraphNodes using those type IDs
+                var action = new GraphNode { Id = "a1", Title = "Run Sync", TypeId = "action" };
+                var user = new GraphNode { Id = "user", Title = "User", TypeId = "users" };
+                var list1 = new GraphNode { Id = "l1", Title = "Projects", TypeId = "list" };
+                var list2 = new GraphNode { Id = "l2", Title = "Tasks", TypeId = "list" };
+                var list3 = new GraphNode { Id = "l3", Title = "Completed", TypeId = "list" };
 
-        await db.SaveChangesAsync();
+                db.Nodes.AddRange(user, list1, action, list2, list3);
+                await db.SaveChangesAsync();
+
+                if (!await db.Edges.AnyAsync())
+                {
+                    db.Edges.Add(new GraphEdge { From = user, To = list1 });
+                    db.Edges.Add(new GraphEdge { From = list1, To = action });
+                    db.Edges.Add(new GraphEdge { From = list1, To = list2 });
+                    db.Edges.Add(new GraphEdge { From = list2, To = list3 });
+
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

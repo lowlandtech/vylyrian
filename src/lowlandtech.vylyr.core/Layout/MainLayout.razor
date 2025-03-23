@@ -1,5 +1,4 @@
-﻿
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject AppVm App
 
 <MudThemeProvider Theme="@App.Theme" IsDarkMode="@App.IsDarkMode" />
@@ -14,13 +13,13 @@
             Icon="@Icons.Material.Filled.Menu"
             Color="Color.Inherit"
             Edge="Edge.Start"
-            OnClick="@App.ToggleDrawerCommand.Execute" />
+            OnClick="@App.ToggleDrawer" />
         <MudText Typo="Typo.h5" Class="ml-3">Vylyr</MudText>
         <MudSpacer />
         <MudIconButton 
             Icon="@DarkLightModeButtonIcon" 
             Color="Color.Inherit"
-            OnClick="App.ToggleDarkModeCommand.Execute" />
+            OnClick="App.ToggleDarkMode" />
     </MudAppBar>
 
     <MudDrawer @bind-Open="@App.DrawerOpen"
@@ -80,19 +79,11 @@
 
     protected override void OnInitialized()
     {
-        App.PropertyChanged += OnAppChanged;
-    }
-
-    private void OnAppChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(App.IsDarkMode) or nameof(App.DrawerOpen))
-        {
-            InvokeAsync(StateHasChanged);
-        }
+        App.OnChange += () => InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        App.PropertyChanged -= OnAppChanged;
+        App.OnChange -= () => InvokeAsync(StateHasChanged);
     }
 }
