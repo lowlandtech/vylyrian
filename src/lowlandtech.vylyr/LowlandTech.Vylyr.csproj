@@ -69,6 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\lowlandtech.core\LowlandTech.Core.csproj" />
     <ProjectReference Include="..\lowlandtech.vylyr.core\LowlandTech.Vylyr.Core.csproj" />
   </ItemGroup>
 

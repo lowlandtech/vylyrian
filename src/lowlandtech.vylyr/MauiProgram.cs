@@ -1,8 +1,10 @@
-﻿namespace LowlandTech.Vylyr;
+﻿using System;
+
+namespace LowlandTech.Vylyr;
 
 public static class MauiProgram
 {
-    public static MauiApp CreateMauiApp()
+    public static async Task<MauiApp> CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
         builder
@@ -12,17 +14,30 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
+        builder.Services.AddDbContext<GraphContext>(options =>
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "graph.db");
+            options.UseSqlite($"Data Source={dbPath}");
+        });
+
         // Add device-specific services used by the LowlandTech.Vylyr.Core project
         builder.Services.AddSingleton<IFormFactor, FormFactor>();
-
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddMudServices();
+        builder.Services.AddSingleton<IFramework,Framework>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        var app = builder.Build();
+
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GraphContext>();
+        await db.Database.EnsureCreatedAsync();
+        await db.UseCaseData();
+
+        return app;
     }
 }

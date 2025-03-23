@@ -17,15 +17,16 @@
         <MudSpacer />
         <MudIconButton 
             Icon="@DarkLightModeButtonIcon" 
-            Color="Color.Inherit" 
+            Color="Color.Inherit"
             OnClick="@DarkModeToggle" />
     </MudAppBar>
 
     <MudDrawer @bind-Open="@_drawerOpen"
         Elevation="2"
         Class="mud-drawer-custom"
-        ClipMode="DrawerClipMode.Always">
-        <NavMenu />
+        Overlay="true"
+        Variant="DrawerVariant.Temporary">
+        <SlidingNavMenu />
     </MudDrawer>
 
     <MudMainContent Class="mt-16 pa-4">
@@ -44,6 +45,23 @@
         .mud-drawer-custom.mud-drawer--close {
             transition: width 0.3s ease, height 0.3s ease;
         }
+    }
+    .menu-container {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+    }
+
+    .menu-panel-wrapper {
+        display: flex;
+        flex-direction: row;
+        transition: transform 0.3s ease;
+        width: 100%;
+    }
+
+    .menu-panel {
+        width: 100%;
+        flex-shrink: 0;
     }
 </style>
 

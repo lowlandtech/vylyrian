@@ -1,8 +1,12 @@
+using LowlandTech.Vylyr.Core.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 // Add device-specific services used by the LowlandTech.Vylyr.Core project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
