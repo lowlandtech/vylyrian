@@ -122,6 +122,11 @@ public class AppVm
     public bool HasBack => _navStack.Count > 1;
 
     /// <summary>
+    /// True if the app is running on a mobile device.
+    /// </summary>
+    public bool IsMobile { get; set; }
+
+    /// <summary>
     /// Occurs when the navigation stack changes (used by SlidingNavMenu).
     /// </summary>
     public event Action? OnMenuChange;
@@ -160,11 +165,9 @@ public class AppVm
     /// </summary>
     public void PopNode()
     {
-        if (_navStack.Count > 1)
-        {
-            _navStack.RemoveAt(_navStack.Count - 1);
-            NotifyMenuChanged();
-        }
+        if (_navStack.Count <= 1) return;
+        _navStack.RemoveAt(_navStack.Count - 1);
+        NotifyMenuChanged();
     }
 
     /// <summary>
@@ -173,11 +176,9 @@ public class AppVm
     public void ResetMenu()
     {
         _navStack.Clear();
-        if (_user is not null)
-        {
-            _navStack.Add(_user);
-            NotifyMenuChanged();
-        }
+        if (_user is null) return;
+        _navStack.Add(_user);
+        NotifyMenuChanged();
     }
 
     private void NotifyMenuChanged() => OnMenuChange?.Invoke();

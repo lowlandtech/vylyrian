@@ -6,6 +6,8 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+<MudBreakpointProvider OnBreakpointChanged="HandleBreakpointChanged" />
+
 <MudLayout>
 
     <MudAppBar Elevation="1" Dense="true">
@@ -25,8 +27,9 @@
     <MudDrawer @bind-Open="@App.DrawerOpen"
         Elevation="2"
         Class="mud-drawer-custom"
-        Overlay="true"
-        Variant="DrawerVariant.Temporary">
+        Overlay="false"
+        Variant="DrawerVariant.Temporary"
+        ClipMode="DrawerClipMode.Always">
         <SlidingNavMenu />
     </MudDrawer>
 
@@ -76,6 +79,13 @@
     public string DarkLightModeButtonIcon => App.IsDarkMode
         ? Icons.Material.Rounded.AutoMode
         : Icons.Material.Outlined.DarkMode;
+
+    private Task HandleBreakpointChanged(Breakpoint breakpoint)
+    {
+        App.IsMobile = breakpoint <= Breakpoint.Sm; // or Breakpoint.Md if you prefer
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 
     protected override void OnInitialized()
     {

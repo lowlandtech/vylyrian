@@ -1,4 +1,5 @@
 @inject GraphContext Db
+@inject AppVm App
 
 <MudPaper Class="menu-panel pa-0">
     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="px-4 py-2">
@@ -10,8 +11,10 @@
         {
             <div></div>
         }
-
-        <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose" />
+        @if (App.IsMobile)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose" />
+        }
     </MudStack>
 
     <MudList T="GraphNode">
