@@ -182,4 +182,11 @@ public class AppVm
     }
 
     private void NotifyMenuChanged() => OnMenuChange?.Invoke();
+
+    /// <summary>
+    /// Gets the icon for the dark/light mode button based on the current theme.
+    /// </summary>
+    public string DarkLightModeButtonIcon => IsDarkMode
+        ? Icons.Material.Rounded.AutoMode
+        : Icons.Material.Outlined.DarkMode;
 }

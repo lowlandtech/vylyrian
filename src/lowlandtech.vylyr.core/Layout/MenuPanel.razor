@@ -26,13 +26,13 @@
         {
             @foreach (var child in _children)
             {
-                <MudListItem OnClick="() => TryNavigate(child)" Class="pr-6">
+                <MudListItem OnClick="() => TryNavigate(child)" Class="px-7">
                     <div style="display: flex; align-items: center; width: 100%;">
                         <MudIcon Icon="@child.Type.Icon" />
-                        <MudText>@child.Title</MudText>
+                        <MudText Class="ml-2">@child.Title</MudText>
                         @if (child.ChildCount > 0)
                         {
-                            <MudBadge Class="mt-4" Content="@child.ChildCount" Color="Color.Primary" Style="margin-left: auto;"/>
+                            <MudBadge Class="mt-4 mr-4" Content="@child.ChildCount" Color="Color.Primary" Style="margin-left: auto;"/>
                         }
                     </div>
                 </MudListItem>

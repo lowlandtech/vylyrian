@@ -6,22 +6,22 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudBreakpointProvider OnBreakpointChanged="HandleBreakpointChanged" />
+<MudBreakpointProvider OnBreakpointChanged="@HandleBreakpointChanged" />
 
 <MudLayout>
 
     <MudAppBar Elevation="1" Dense="true">
         <MudIconButton 
-            Icon="@Icons.Material.Filled.Menu"
-            Color="Color.Inherit"
-            Edge="Edge.Start"
-            OnClick="@App.ToggleDrawer" />
+        Icon="@Icons.Material.Filled.Menu"
+        Color="Color.Inherit"
+        Edge="Edge.Start"
+        OnClick="@App.ToggleDrawer" />
         <MudText Typo="Typo.h5" Class="ml-3">Vylyr</MudText>
         <MudSpacer />
         <MudIconButton 
-            Icon="@DarkLightModeButtonIcon" 
-            Color="Color.Inherit"
-            OnClick="App.ToggleDarkMode" />
+        Icon="@App.DarkLightModeButtonIcon" 
+        Color="Color.Inherit"
+        OnClick="App.ToggleDarkMode" />
     </MudAppBar>
 
     <MudDrawer @bind-Open="@App.DrawerOpen"
@@ -39,17 +39,27 @@
 
 </MudLayout>
 
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
 <style>
     @@media (max-width: 960px) {
-        .mud-drawer-custom.mud-drawer--open {
-            width: 100% !important;
-            max-width: 100% !important;
-        }
+        .mud-drawer-custom.mud-drawer--open
 
-        .mud-drawer-custom.mud-drawer--close {
-            transition: width 0.3s ease, height 0.3s ease;
-        }
+    {
+        width: 100% !important;
+        max-width: 100% !important;
     }
+
+    .mud-drawer-custom.mud-drawer--close {
+        transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    }
+
     .menu-container {
         overflow: hidden;
         position: relative;
@@ -69,27 +79,24 @@
     }
 </style>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
-
 @code {
-    public string DarkLightModeButtonIcon => App.IsDarkMode
-        ? Icons.Material.Rounded.AutoMode
-        : Icons.Material.Outlined.DarkMode;
-
-    private Task HandleBreakpointChanged(Breakpoint breakpoint)
-    {
-        App.IsMobile = breakpoint <= Breakpoint.Sm; // or Breakpoint.Md if you prefer
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
 
     protected override void OnInitialized()
     {
         App.OnChange += () => InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// Initializes the app state manager.
+    /// </summary>
+    /// <param name="breakpoint"></param>
+    /// <returns></returns>
+    public Task HandleBreakpointChanged(Breakpoint breakpoint)
+    {
+        App.IsMobile = breakpoint <= Breakpoint.MdAndDown; // or Breakpoint.Md if you prefer
+
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     public void Dispose()

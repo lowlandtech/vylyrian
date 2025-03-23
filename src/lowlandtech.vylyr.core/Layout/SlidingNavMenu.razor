@@ -1,7 +1,7 @@
 @inject AppVm App
 @inject GraphContext Db
 
-@if (App.CurrentNode != null)
+@if (App.CurrentNode is not null)
 {
     <MudPaper Class="menu-container">
         <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (App.NavStack.Count - 1))%);">
@@ -23,7 +23,6 @@ else
 }
 
 @code {
-
     protected override async Task OnInitializedAsync()
     {
         App.OnChange += ()=> InvokeAsync(StateHasChanged);
@@ -36,5 +35,4 @@ else
         App.OnChange -= () => InvokeAsync(StateHasChanged);
         App.OnMenuChange -= () => InvokeAsync(StateHasChanged);
     }
-
 }
