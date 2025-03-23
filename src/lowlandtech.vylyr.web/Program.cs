@@ -6,6 +6,7 @@ builder.Services.AddRazorComponents()
 
 // Add device-specific services used by the LowlandTech.Vylyr.Core project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
