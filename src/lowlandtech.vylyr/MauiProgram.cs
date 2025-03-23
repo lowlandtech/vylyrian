@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using LowlandTech.Vylyr.Services;
-using LowlandTech.Vylyr.Core.Services;
-
-namespace LowlandTech.Vylyr;
+﻿namespace LowlandTech.Vylyr;
 
 public static class MauiProgram
 {

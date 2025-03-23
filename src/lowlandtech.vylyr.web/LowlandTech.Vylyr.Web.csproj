@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\lowlandtech.vylyr.core\LowlandTech.Vylyr.Core.csproj" />
   </ItemGroup>
 

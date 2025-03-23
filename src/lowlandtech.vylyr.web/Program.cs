@@ -1,7 +1,3 @@
-using LowlandTech.Vylyr.Web.Components;
-using LowlandTech.Vylyr.Core.Services;
-using LowlandTech.Vylyr.Web.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
