@@ -1,6 +1,6 @@
 ﻿namespace LowlandTech.Vylyr.Core.Models;
 
-public class NodeType
+public class GraphNodeType
 {
     public string Id { get; set; } = default!; // e.g. "list", "action", "report"
     public string Label { get; set; } = default!;

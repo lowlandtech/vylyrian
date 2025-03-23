@@ -9,23 +9,23 @@ public static class GraphSeeder
             if (!await db.NodeTypes.AnyAsync())
             {
                 db.NodeTypes.AddRange(
-                    new NodeType
+                    new GraphNodeType
                     {
                         Id = "users", Label = "Users", Icon = 
                             Icons.Material.Filled.List, ComponentName = "UserView"
                     },
-                    new NodeType
+                    new GraphNodeType
                     {
                         Id = "list", Label = "List", 
                         Icon = Icons.Material.Filled.List, ComponentName = "ListView"
                     },
-                    new NodeType
+                    new GraphNodeType
                     {
                         Id = "action", Label = "Action", 
                         Icon = Icons.Material.Filled.FlashOn,
                         ComponentName = "ActionView"
                     },
-                    new NodeType
+                    new GraphNodeType
                     {
                         Id = "report", Label = "Report", 
                         Icon = Icons.Material.Filled.Assessment,

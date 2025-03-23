@@ -4,7 +4,7 @@ public class GraphContext(DbContextOptions<GraphContext> options) : DbContext(op
 {
     public DbSet<GraphNode> Nodes => Set<GraphNode>();
     public DbSet<GraphEdge> Edges => Set<GraphEdge>();
-    public DbSet<NodeType> NodeTypes => Set<NodeType>();
+    public DbSet<GraphNodeType> NodeTypes => Set<GraphNodeType>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
