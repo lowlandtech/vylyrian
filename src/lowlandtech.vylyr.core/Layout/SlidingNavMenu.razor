@@ -1,16 +1,16 @@
-
+@inject AppVm App
 @inject GraphContext Db
 
-@if (_user != null)
+@if (App.CurrentNode != null)
 {
     <MudPaper Class="menu-container">
-        <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (_stack.Count - 1))%);">
-            @for (int i = 0; i < _stack.Count; i++)
+        <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (App.NavStack.Count - 1))%);">
+            @for (int i = 0; i < App.NavStack.Count; i++)
             {
-                <MenuPanel CurrentNode="_stack[i]"
-                           OnNavigate="Push"
-                           OnBack="Pop"
-                           OnClose="CloseMenu"
+                <MenuPanel CurrentNode="App.NavStack[i]"
+                           OnNavigate="App.PushNode"
+                           OnBack="App.PopNode"
+                           OnClose="App.CloseDrawer"
                            ShowBack="@(i > 0)" />
             }
         </div>
@@ -22,20 +22,14 @@ else
 }
 
 @code {
-    private List<GraphNode> _stack = new();
-    private GraphNode? _user;
-
     protected override async Task OnInitializedAsync()
     {
-        _user = await Db.Nodes.FirstOrDefaultAsync(n => n.Type == "user");
-        if (_user != null) _stack.Add(_user);
+        App.OnMenuChange += StateHasChanged;
+        await App.InitMenuAsync(Db);
     }
 
-    private void Push(GraphNode node) => _stack.Add(node);
-    private void Pop() { if (_stack.Count > 1) _stack.RemoveAt(_stack.Count - 1); }
-
-    private void CloseMenu()
+    public void Dispose()
     {
-        _stack.Clear(); // or trigger close logic in MainLayout if the menu is in a drawer
+        App.OnMenuChange -= StateHasChanged;
     }
 }

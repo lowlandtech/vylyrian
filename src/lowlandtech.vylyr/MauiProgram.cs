@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LowlandTech.Vylyr;
+﻿namespace LowlandTech.Vylyr;
 
 public static class MauiProgram
 {
@@ -25,6 +23,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddMudServices();
         builder.Services.AddSingleton<IFramework,Framework>();
+        builder.Services.AddSingleton<AppVm>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
