@@ -1,10 +1,23 @@
 ﻿namespace LowlandTech.Vylyr.Core.ViewModels;
 
+/// <summary>
+/// Manages global application state such as theme, drawer visibility, and navigational menu stack.
+/// </summary>
 public class AppVm
 {
-    public bool DrawerOpen { get; set; } = false;
-    public bool IsDarkMode { get; private set; } = true;
+    /// <summary>
+    /// Occurs when general application state changes (e.g. theme, drawer).
+    /// </summary>
+    public event Action? OnChange;
 
+    /// <summary>
+    /// Occurs when the navigation menu stack changes.
+    /// </summary>
+    public event Action? OnMenuChange;
+
+    /// <summary>
+    /// Gets the current MudBlazor theme.
+    /// </summary>
     public MudTheme Theme { get; } = new()
     {
         PaletteLight = new PaletteLight
@@ -43,26 +56,60 @@ public class AppVm
             TableLines = "#33323e",
             Divider = "#292838",
             OverlayLight = "#1e1e2d80",
-        },
+        }
     };
 
-    public event Action? OnChange;
+    private bool _drawerOpen = false;
+    private bool _isDarkMode = true;
 
+    /// <summary>
+    /// Gets or sets whether the side drawer is open.
+    /// </summary>
+    public bool DrawerOpen
+    {
+        get => _drawerOpen;
+        set
+        {
+            if (_drawerOpen != value)
+            {
+                _drawerOpen = value;
+                NotifyStateChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets whether the app is in dark mode.
+    /// </summary>
+    public bool IsDarkMode => _isDarkMode;
+
+    /// <summary>
+    /// Toggles the side drawer open/close.
+    /// </summary>
     public void ToggleDrawer()
     {
-        DrawerOpen = !DrawerOpen;
+        _drawerOpen = !_drawerOpen;
         NotifyStateChanged();
     }
 
+    /// <summary>
+    /// Closes the side drawer.
+    /// </summary>
     public void CloseDrawer()
     {
-        DrawerOpen = false;
-        NotifyStateChanged();
+        if (_drawerOpen)
+        {
+            _drawerOpen = false;
+            NotifyStateChanged();
+        }
     }
 
+    /// <summary>
+    /// Toggles between light and dark themes.
+    /// </summary>
     public void ToggleDarkMode()
     {
-        IsDarkMode = !IsDarkMode;
+        _isDarkMode = !_isDarkMode;
         NotifyStateChanged();
     }
 
@@ -71,12 +118,24 @@ public class AppVm
     private readonly List<GraphNode> _navStack = [];
     private GraphNode? _user;
 
+    /// <summary>
+    /// Gets the current navigation stack.
+    /// </summary>
     public IReadOnlyList<GraphNode> NavStack => _navStack;
+
+    /// <summary>
+    /// Gets the currently selected node.
+    /// </summary>
     public GraphNode? CurrentNode => _navStack.LastOrDefault();
+
+    /// <summary>
+    /// Gets a value indicating whether the navigation stack has a previous item (i.e., can go back).
+    /// </summary>
     public bool HasBack => _navStack.Count > 1;
 
-    public event Action? OnMenuChange;
-
+    /// <summary>
+    /// Initializes the navigation menu by loading the root user node from the database.
+    /// </summary>
     public async Task InitMenuAsync(GraphContext db)
     {
         if (_user is not null) return;
@@ -87,31 +146,46 @@ public class AppVm
         {
             _navStack.Clear();
             _navStack.Add(_user);
-            OnMenuChange?.Invoke();
+            NotifyMenuChanged();
         }
     }
 
+    /// <summary>
+    /// Pushes a new node onto the navigation stack.
+    /// </summary>
+    /// <param name="node">The node to navigate into.</param>
     public void PushNode(GraphNode? node)
     {
         if (node is null) return;
+
         _navStack.Add(node);
-        OnMenuChange?.Invoke();
+        NotifyMenuChanged();
     }
 
+    /// <summary>
+    /// Pops the last node off the navigation stack.
+    /// </summary>
     public void PopNode()
     {
-        if (_navStack.Count <= 1) return;
-        _navStack.RemoveAt(_navStack.Count - 1);
-        OnMenuChange?.Invoke();
+        if (_navStack.Count > 1)
+        {
+            _navStack.RemoveAt(_navStack.Count - 1);
+            NotifyMenuChanged();
+        }
     }
 
+    /// <summary>
+    /// Resets the navigation menu to the root user node.
+    /// </summary>
     public void ResetMenu()
     {
         _navStack.Clear();
+
         if (_user is not null)
             _navStack.Add(_user);
 
-        OnMenuChange?.Invoke();
+        NotifyMenuChanged();
     }
 
+    private void NotifyMenuChanged() => OnMenuChange?.Invoke();
 }
