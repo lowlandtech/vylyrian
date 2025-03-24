@@ -1,4 +1,10 @@
-﻿namespace LowlandTech.Vylyr;
+﻿using LowlandTech.Vylyr.Core.Pages;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+
+namespace LowlandTech.Vylyr;
 
 public static class MauiProgram
 {
@@ -24,7 +30,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddMudServices();
         builder.Services.AddSingleton<IFramework,Framework>();
-        builder.Services.AddSingleton<AppVm>();
+        builder.Services.AddScoped<AppVm>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
@@ -32,6 +38,10 @@ public static class MauiProgram
 #endif
 
         var app = builder.Build();
+
+        Routing.RegisterRoute("/", typeof(Home));
+        Routing.RegisterRoute("counter", typeof(Counter));
+        Routing.RegisterRoute("weather", typeof(Weather));
 
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<GraphContext>();
