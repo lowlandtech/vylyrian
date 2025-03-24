@@ -1,4 +1,5 @@
-<h5 class="mt-4 mb-2 text-center text-primary font-weight-bold">@SelectedBlock?.Group</h5>
+@inject AppVm App
+<h3 style="@GetGroupHeaderStyle()">@SelectedBlock?.Group</h3>
 
 <CalendarTabStrip @ref="_tabStrip"
                   TimeBlocks="_timeBlocks"
@@ -11,16 +12,18 @@
     <div class="p-4">
         @foreach (var slot in SelectedBlock.Slots)
         {
-            <MudPaper Class="@GetPaperClass(slot)"
-                      Elevation="1"
-                      Style="cursor: pointer"
-                      OnClick="@(() => SelectSlot(SelectedBlock, slot))">
+            <MudPaper 
+                Class="@GetPaperClass(slot)"
+                Elevation="1"
+                Style="@GetSlotStyle(slot)"
+                OnClick="@(() => SelectSlot(SelectedBlock, slot))">
                 @slot.Display
                 @if (slot.IsSelected)
                 {
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" />
                 }
             </MudPaper>
+
         }
     </div>
 }
@@ -38,6 +41,24 @@
             _timeBlocks.Add(new TimeBlock(today.AddDays(i)));
 
         SelectedBlock = _timeBlocks.FirstOrDefault(tb => tb.Date == today);
+    }
+
+    private string GetGroupHeaderStyle()
+    {
+        var color = App.IsDarkMode
+            ? App.Theme.PaletteDark.TextPrimary
+            : App.Theme.PaletteLight.Black;
+
+        return $"text-align:center;font-weight:bold;font-size:1.5rem;color:{color};margin:1rem 0;";
+    }
+
+    private string GetSlotStyle(TimeSlot slot)
+    {
+        var textColor = App.IsDarkMode
+            ? App.Theme.PaletteDark.TextPrimary
+            : App.Theme.PaletteLight.AppbarText;
+
+        return $"cursor:pointer;font-size:1.1rem;color:{textColor};display:flex;align-items:center;justify-content:space-between;";
     }
 
     private void OnTabChanged(TimeBlock block)

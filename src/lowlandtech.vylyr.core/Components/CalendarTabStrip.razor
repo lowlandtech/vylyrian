@@ -1,3 +1,5 @@
+@inject AppVm App
+
 <div class="d-flex align-center mb-2">
     <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="() => ScrollDays(false)" />
 
@@ -10,11 +12,12 @@
         {
             var isSelected = block?.Id == SelectedBlock?.Id;
 
-            <div class="calendar-tab @(isSelected ? "selected" : "")"
+            <div class="calendar-tab"
+                 style="@($"{GetBaseTabStyle()} {(isSelected ? GetSelectedTabStyle() : GetUnselectedTabStyle())}")"
                  @onclick="@(() => SelectBlock(block))"
                  @ref="_tabRefs[block.Id]">
-                <div class="day-of-week">@block.DayOfWeek</div>
-                <div class="day-of-month">@block.DayOfMonth</div>
+                <div style="font-size: 0.85rem; font-weight: 500;">@block.DayOfWeek</div>
+                <div style="font-size: 1.2rem; font-weight: bold;">@block.DayOfMonth</div>
             </div>
         }
     </div>
@@ -30,6 +33,19 @@
     private Dictionary<Guid, ElementReference> _tabRefs = new();
 
     private ElementReference _containerRef;
+    private string GetBaseTabStyle() => @"""
+                                            min-width: 60px;
+                                            padding: 8px 6px;
+                                            margin: 0 4px;
+                                            border-radius: 8px;
+                                            text-align: center;
+                                            user-select: none;
+                                            font-size: 0.9rem;
+                                            border: 1px solid transparent;
+                                            transition: background-color 0.3s;
+                                            cursor: pointer;
+                                            flex-shrink: 0;
+                                        """;
 
     private async void HandleScroll()
     {
@@ -41,6 +57,23 @@
             await OnScrollEndReached.InvokeAsync(false); // Scroll left
         else if (scrollPos + clientWidth >= scrollWidth - 40)
             await OnScrollEndReached.InvokeAsync(true);  // Scroll right
+    }
+
+    private string GetTabClass(bool isSelected)
+    {
+        return "calendar-tab"; // Common base class
+    }
+
+    private string GetSelectedTabStyle()
+    {
+        var primary = App.IsDarkMode ? App.Theme.PaletteDark.Primary : App.Theme.PaletteLight.Primary;
+        return $"background-color: {primary}; color: #ffffff;";
+    }
+
+    private string GetUnselectedTabStyle()
+    {
+        var textColor = App.IsDarkMode ? App.Theme.PaletteDark.TextPrimary : App.Theme.PaletteLight.AppbarText;
+        return $"background-color: transparent; color: {textColor};";
     }
 
     private async Task SelectBlock(TimeBlock block)
@@ -89,13 +122,7 @@
     }
 
         .calendar-tab:hover {
-            background-color: #f0f0f0;
-        }
-
-        .calendar-tab.selected {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
-            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.08);
         }
 
     .day-of-week {
@@ -114,5 +141,6 @@
         .calendar-tab-strip::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Edge */
         }
+
 
 </style>
