@@ -25,6 +25,7 @@
     </MudAppBar>
 
     <MudDrawer @bind-Open="@App.DrawerOpen"
+        Width="300px"
         Elevation="2"
         Class="mud-drawer-custom"
         Overlay="false"
@@ -93,7 +94,7 @@
     /// <returns></returns>
     public Task HandleBreakpointChanged(Breakpoint breakpoint)
     {
-        App.IsMobile = breakpoint <= Breakpoint.MdAndDown; // or Breakpoint.Md if you prefer
+        App.IsMobile = breakpoint <= Breakpoint.Xs; // or Breakpoint.Md if you prefer
 
         StateHasChanged();
         return Task.CompletedTask;
