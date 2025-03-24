@@ -1,10 +1,4 @@
-﻿using LowlandTech.Vylyr.Core.Pages;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
-
-namespace LowlandTech.Vylyr;
+﻿namespace LowlandTech.Vylyr;
 
 public static class MauiProgram
 {

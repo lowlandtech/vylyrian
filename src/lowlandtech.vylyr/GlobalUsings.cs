@@ -1,7 +1,6 @@
-// Global using directives
-
 global using LowlandTech.Core.Abstractions;
 global using LowlandTech.Vylyr.Core.Infrastructure;
+global using LowlandTech.Vylyr.Core.Pages;
 global using LowlandTech.Vylyr.Core.Services;
 global using LowlandTech.Vylyr.Core.ViewModels;
 global using LowlandTech.Vylyr.Services;
