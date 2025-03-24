@@ -5,7 +5,7 @@
     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="px-4 py-2">
         @if (ShowBack)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="OnBack" />
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="OnBack" Class="pl-1" />
         }
         else
         {
@@ -13,7 +13,7 @@
         }
         @if (App.IsMobile)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose" />
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose"/>
         }
     </MudStack>
 
@@ -28,7 +28,7 @@
             {
                 @if (child.ChildCount > 0)
                 {
-                    <MudListItem OnClick="() => OnNavigate.InvokeAsync(child)" Class="px-7">
+                    <MudListItem OnClick="() => OnNavigate.InvokeAsync(child)" Class="pl-5">
                         <div style="display: flex; align-items: center; width: 100%;">
                             <MudIcon Icon="@child.Type.Icon" />
                             <MudText Class="ml-2">@child.Title</MudText>
@@ -41,7 +41,7 @@
                 }
                 else
                 {
-                    <MudListItem OnClick="() => App.SetActiveNode(child)" Class="px-7">
+                    <MudListItem OnClick="() => App.SetActiveNode(child)" Class="pl-5">
                         <div style="display: flex; align-items: center; width: 100%;">
                             <MudIcon Icon="@child.Type.Icon" />
                             <MudText Class="ml-2">@child.Title</MudText>
