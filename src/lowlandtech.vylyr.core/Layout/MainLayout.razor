@@ -28,8 +28,6 @@
         Width="300px"
         Elevation="2"
         Class="mud-drawer-custom"
-        Overlay="false"
-        Variant="DrawerVariant.Temporary"
         ClipMode="DrawerClipMode.Always">
         <SlidingNavMenu />
     </MudDrawer>
@@ -82,11 +80,6 @@
 
 @code {
 
-    protected override void OnInitialized()
-    {
-        App.OnChange += () => InvokeAsync(StateHasChanged);
-    }
-
     /// <summary>
     /// Initializes the app state manager.
     /// </summary>
@@ -98,6 +91,11 @@
 
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    protected override void OnInitialized()
+    {
+        App.OnChange += () => InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

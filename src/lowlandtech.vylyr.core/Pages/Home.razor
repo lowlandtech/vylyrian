@@ -3,7 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<DynamicComponent Type="@GetComponentType(App.CurrentNode?.Type?.ComponentName)" />
+<DynamicComponent Type="@GetComponentType(App.ActiveNode?.Type?.ComponentName)" />
 
 @code {
     private Type? GetComponentType(string? name)
@@ -13,7 +13,18 @@
             "ListView" => typeof(ListView),
             "ActionView" => typeof(ActionView),
             "ReportView" => typeof(ReportView),
+            "TaskView" => typeof(TaskView),
             _ => typeof(HomeView)
         };
+    }
+
+    protected override void OnInitialized()
+    {
+        App.OnActiveNodeChanged += () => InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        App.OnActiveNodeChanged -= () => InvokeAsync(StateHasChanged);
     }
 }

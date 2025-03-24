@@ -189,4 +189,32 @@ public class AppVm
     public string DarkLightModeButtonIcon => IsDarkMode
         ? Icons.Material.Rounded.AutoMode
         : Icons.Material.Outlined.DarkMode;
+
+    private GraphNode? _activeNode;
+
+    /// <summary>
+    /// The currently selected node to display a component for (e.g. clicked leaf).
+    /// </summary>
+    public GraphNode? ActiveNode => _activeNode;
+
+    /// <summary>
+    /// Occurs when a component-viewing node is selected.
+    /// </summary>
+    public event Action? OnActiveNodeChanged;
+
+    /// <summary>
+    /// Sets the active node to display in the main content.
+    /// </summary>
+    public void SetActiveNode(GraphNode? node)
+    {
+        if (node is null || node.Type?.ComponentName is null)
+            return;
+
+        _activeNode = node;
+
+        if(IsMobile)
+            CloseDrawer();
+
+        OnActiveNodeChanged?.Invoke();
+    }
 }

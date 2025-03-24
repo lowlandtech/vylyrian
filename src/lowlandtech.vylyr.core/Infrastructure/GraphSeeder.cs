@@ -11,25 +11,38 @@ public static class GraphSeeder
                 db.NodeTypes.AddRange(
                     new GraphNodeType
                     {
-                        Id = "users", Label = "Users", Icon = 
-                            Icons.Material.Filled.List, ComponentName = "UserView"
+                        Id = "users", 
+                        Label = "Users", 
+                        Icon = Icons.Material.Filled.List, 
+                        ComponentName = "UserView"
                     },
                     new GraphNodeType
                     {
-                        Id = "list", Label = "List", 
-                        Icon = Icons.Material.Filled.List, ComponentName = "ListView"
+                        Id = "list", 
+                        Label = "List", 
+                        Icon = Icons.Material.Filled.List, 
+                        ComponentName = "ListView"
                     },
                     new GraphNodeType
                     {
-                        Id = "action", Label = "Action", 
+                        Id = "action", 
+                        Label = "Action", 
                         Icon = Icons.Material.Filled.FlashOn,
                         ComponentName = "ActionView"
                     },
                     new GraphNodeType
                     {
-                        Id = "report", Label = "Report", 
+                        Id = "report", 
+                        Label = "Report", 
                         Icon = Icons.Material.Filled.Assessment,
                         ComponentName = "ReportView"
+                    },
+                    new GraphNodeType
+                    {
+                        Id = "task",
+                        Label = "Task",
+                        Icon = Icons.Material.Filled.Task,
+                        ComponentName = "TaskView"
                     }
                 );
 
@@ -46,7 +59,11 @@ public static class GraphSeeder
                 var list2 = new GraphNode { Id = "l2", Title = "Tasks", TypeId = "list" };
                 var list3 = new GraphNode { Id = "l3", Title = "Completed", TypeId = "list" };
 
-                db.Nodes.AddRange(user, list1, action, list2, list3);
+                var task1 = new GraphNode { Id = "t1", Title = "Task 1", TypeId = "task" };
+                var task2 = new GraphNode { Id = "t2", Title = "Task 2", TypeId = "task" };
+                var task3 = new GraphNode { Id = "t3", Title = "Task 3", TypeId = "task" };
+
+                db.Nodes.AddRange(user, list1, action, list2, list3, task1, task2, task3);
                 await db.SaveChangesAsync();
 
                 if (!await db.Edges.AnyAsync())
@@ -55,6 +72,10 @@ public static class GraphSeeder
                     db.Edges.Add(new GraphEdge { From = list1, To = action });
                     db.Edges.Add(new GraphEdge { From = list1, To = list2 });
                     db.Edges.Add(new GraphEdge { From = list2, To = list3 });
+
+                    db.Edges.Add(new GraphEdge { From = list2, To = task1 });
+                    db.Edges.Add(new GraphEdge { From = list2, To = task2 });
+                    db.Edges.Add(new GraphEdge { From = list2, To = task3 });
 
                     await db.SaveChangesAsync();
                 }
