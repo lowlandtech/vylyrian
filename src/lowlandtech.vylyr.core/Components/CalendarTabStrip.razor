@@ -1,0 +1,118 @@
+<div class="d-flex align-center mb-2">
+    <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="() => ScrollDays(false)" />
+
+    <div class="flex-grow-1 overflow-x-auto d-flex px-2 calendar-tab-strip"
+         style="scroll-behavior: smooth; touch-action: pan-x; -webkit-overflow-scrolling: touch;"
+         @ref="_containerRef"
+         @onscroll="HandleScroll">
+
+        @foreach (var block in TimeBlocks)
+        {
+            var isSelected = block?.Id == SelectedBlock?.Id;
+
+            <div class="calendar-tab @(isSelected ? "selected" : "")"
+                 @onclick="@(() => SelectBlock(block))"
+                 @ref="_tabRefs[block.Id]">
+                <div class="day-of-week">@block.DayOfWeek</div>
+                <div class="day-of-month">@block.DayOfMonth</div>
+            </div>
+        }
+    </div>
+
+    <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="() => ScrollDays(true)" />
+</div>
+
+@code {
+    [Parameter] public List<TimeBlock> TimeBlocks { get; set; }
+    [Parameter] public TimeBlock SelectedBlock { get; set; }
+    [Parameter] public EventCallback<TimeBlock> OnSelectedChanged { get; set; }
+    [Parameter] public EventCallback<bool> OnScrollEndReached { get; set; }
+    private Dictionary<Guid, ElementReference> _tabRefs = new();
+
+    private ElementReference _containerRef;
+
+    private async void HandleScroll()
+    {
+        var scrollPos = await JS.InvokeAsync<int>("calendarTabStrip.getScrollPosition", _containerRef);
+        var scrollWidth = await JS.InvokeAsync<int>("calendarTabStrip.getScrollWidth", _containerRef);
+        var clientWidth = await JS.InvokeAsync<int>("calendarTabStrip.getClientWidth", _containerRef);
+
+        if (scrollPos < 40)
+            await OnScrollEndReached.InvokeAsync(false); // Scroll left
+        else if (scrollPos + clientWidth >= scrollWidth - 40)
+            await OnScrollEndReached.InvokeAsync(true);  // Scroll right
+    }
+
+    private async Task SelectBlock(TimeBlock block)
+    {
+        if (SelectedBlock?.Id != block.Id)
+        {
+            SelectedBlock = block;
+            await OnSelectedChanged.InvokeAsync(block);
+            await ScrollToSelectedAsync();
+        }
+    }
+
+    private async Task ScrollDays(bool forward)
+    {
+        await OnScrollEndReached.InvokeAsync(forward);
+    }
+
+    public async Task ScrollByAsync(int offset)
+    {
+        await JS.InvokeVoidAsync("calendarTabStrip.scrollBy", _containerRef, offset);
+    }
+
+    public async Task ScrollToSelectedAsync()
+    {
+        if (SelectedBlock != null && _tabRefs.TryGetValue(SelectedBlock.Id, out var elementRef))
+        {
+            await JS.InvokeVoidAsync("calendarTabStrip.scrollIntoView", elementRef);
+        }
+    }
+
+    [Inject] private IJSRuntime JS { get; set; }
+}
+<style>
+    .calendar-tab {
+        min-width: 60px;
+        padding: 6px;
+        margin: 0 4px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 0.85rem;
+        cursor: pointer;
+        background-color: white;
+        border: 1px solid transparent;
+        user-select: none;
+        flex-shrink: 0;
+    }
+
+        .calendar-tab:hover {
+            background-color: #f0f0f0;
+        }
+
+        .calendar-tab.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            font-weight: bold;
+        }
+
+    .day-of-week {
+        font-size: 0.8rem;
+    }
+
+    .day-of-month {
+        font-size: 1rem;
+    }
+
+    .calendar-tab-strip {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+    }
+
+        .calendar-tab-strip::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+
+</style>

@@ -1,1 +1,98 @@
-<p>HomeView</p>
+<h5 class="mt-4 mb-2 text-center text-primary font-weight-bold">@SelectedBlock?.Group</h5>
+
+<CalendarTabStrip @ref="_tabStrip"
+                  TimeBlocks="_timeBlocks"
+                  SelectedBlock="SelectedBlock"
+                  OnSelectedChanged="OnTabChanged"
+                  OnScrollEndReached="LoadMore" />
+
+@if (SelectedBlock is not null)
+{
+    <div class="p-4">
+        @foreach (var slot in SelectedBlock.Slots)
+        {
+            <MudPaper Class="@GetPaperClass(slot)"
+                      Elevation="1"
+                      Style="cursor: pointer"
+                      OnClick="@(() => SelectSlot(SelectedBlock, slot))">
+                @slot.Display
+                @if (slot.IsSelected)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" />
+                }
+            </MudPaper>
+        }
+    </div>
+}
+
+@code {
+    private CalendarTabStrip _tabStrip;
+    private List<TimeBlock> _timeBlocks = new();
+    private const int Horizon = 10;
+    private TimeBlock SelectedBlock;
+
+    protected override void OnInitialized()
+    {
+        var today = DateTime.Today;
+        for (int i = -Horizon; i <= Horizon; i++)
+            _timeBlocks.Add(new TimeBlock(today.AddDays(i)));
+
+        SelectedBlock = _timeBlocks.FirstOrDefault(tb => tb.Date == today);
+    }
+
+    private void OnTabChanged(TimeBlock block)
+    {
+        SelectedBlock = block;
+    }
+
+    private async Task LoadMore(bool forward)
+    {
+        if (forward)
+        {
+            var last = _timeBlocks.Last().Date;
+            for (int i = 1; i <= Horizon; i++)
+                _timeBlocks.Add(new TimeBlock(last.AddDays(i)));
+        }
+        else
+        {
+            var first = _timeBlocks.First().Date;
+            for (int i = Horizon; i >= 1; i--)
+                _timeBlocks.Insert(0, new TimeBlock(first.AddDays(-i)));
+        }
+
+        // ? Always sort after changes
+        _timeBlocks = _timeBlocks.OrderBy(tb => tb.Date).ToList();
+
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(50);
+
+        if (_tabStrip is not null)
+        {
+            var offset = forward ? 200 : -200;
+            await _tabStrip.ScrollByAsync(offset);
+        }
+    }
+
+    private void SelectSlot(TimeBlock block, TimeSlot slot)
+    {
+        foreach (var b in _timeBlocks)
+            foreach (var s in b.Slots)
+                s.IsSelected = false;
+
+        slot.IsSelected = true;
+    }
+
+    private string GetPaperClass(TimeSlot slot)
+    {
+        var baseClass = "mb-1 p-2 d-flex justify-space-between align-center";
+        return slot.IsSelected ? $"{baseClass} mud-theme-primary" : baseClass;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _tabStrip.ScrollToSelectedAsync();
+        }
+    }
+}
