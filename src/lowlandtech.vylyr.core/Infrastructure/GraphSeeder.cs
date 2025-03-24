@@ -43,6 +43,13 @@ public static class GraphSeeder
                         Label = "Task",
                         Icon = Icons.Material.Filled.Task,
                         ComponentName = "TaskView"
+                    },
+                    new GraphNodeType
+                    {
+                        Id = "page",
+                        Label = "Page",
+                        Icon = Icons.Material.Filled.Pages,
+                        ComponentName = "HomeView"
                     }
                 );
 
@@ -55,6 +62,9 @@ public static class GraphSeeder
                 // Seed GraphNodes using those type IDs
                 var action = new GraphNode { Id = "a1", Title = "Run Sync", TypeId = "action" };
                 var user = new GraphNode { Id = "user", Title = "User", TypeId = "users" };
+                var home = new GraphNode { Id = "/", Title = "Home", TypeId = "page" };
+                var counter = new GraphNode { Id = "counter", Title = "Counter", TypeId = "page" };
+                var weather = new GraphNode { Id = "weather", Title = "Weather", TypeId = "page" };
                 var list1 = new GraphNode { Id = "l1", Title = "Projects", TypeId = "list" };
                 var list2 = new GraphNode { Id = "l2", Title = "Tasks", TypeId = "list" };
                 var list3 = new GraphNode { Id = "l3", Title = "Completed", TypeId = "list" };
@@ -63,12 +73,15 @@ public static class GraphSeeder
                 var task2 = new GraphNode { Id = "t2", Title = "Task 2", TypeId = "task" };
                 var task3 = new GraphNode { Id = "t3", Title = "Task 3", TypeId = "task" };
 
-                db.Nodes.AddRange(user, list1, action, list2, list3, task1, task2, task3);
+                db.Nodes.AddRange(user, list1, action, list2, list3, task1, task2, task3, home, counter, weather);
                 await db.SaveChangesAsync();
 
                 if (!await db.Edges.AnyAsync())
                 {
                     db.Edges.Add(new GraphEdge { From = user, To = list1 });
+                    db.Edges.Add(new GraphEdge { From = user, To = home });
+                    db.Edges.Add(new GraphEdge { From = user, To = counter });
+                    db.Edges.Add(new GraphEdge { From = user, To = weather });
                     db.Edges.Add(new GraphEdge { From = list1, To = action });
                     db.Edges.Add(new GraphEdge { From = list1, To = list2 });
                     db.Edges.Add(new GraphEdge { From = list2, To = list3 });

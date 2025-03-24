@@ -46,17 +46,14 @@
 
 <style>
     @@media (max-width: 960px) {
-        .mud-drawer-custom.mud-drawer--open
+        .mud-drawer-custom.mud-drawer--open {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
 
-    {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .mud-drawer-custom.mud-drawer--close {
-        transition: width 0.3s ease, height 0.3s ease;
-    }
-
+        .mud-drawer-custom.mud-drawer--close {
+            transition: width 0.3s ease, height 0.3s ease;
+        }
     }
 
     .menu-container {
@@ -88,6 +85,7 @@
     public Task HandleBreakpointChanged(Breakpoint breakpoint)
     {
         App.IsMobile = breakpoint <= Breakpoint.Xs; // or Breakpoint.Md if you prefer
+        App.DrawerOpen = !App.IsMobile;
 
         StateHasChanged();
         return Task.CompletedTask;

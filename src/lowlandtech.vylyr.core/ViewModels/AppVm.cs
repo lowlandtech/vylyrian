@@ -1,10 +1,12 @@
-﻿namespace LowlandTech.Vylyr.Core.ViewModels;
+﻿using Microsoft.AspNetCore.Components;
+
+namespace LowlandTech.Vylyr.Core.ViewModels;
 
 /// <summary>
 /// Application-wide state manager. Controls layout state, theme, and navigation stack.
 /// Designed to be platform-agnostic across MAUI, Photino, and Blazor Server/Web.
 /// </summary>
-public class AppVm
+public class AppVm(NavigationManager navigationManager)
 {
     // -------------------------------
     // Theme & UI State
@@ -191,7 +193,6 @@ public class AppVm
         : Icons.Material.Outlined.DarkMode;
 
     private GraphNode? _activeNode;
-
     /// <summary>
     /// The currently selected node to display a component for (e.g. clicked leaf).
     /// </summary>
@@ -212,7 +213,16 @@ public class AppVm
 
         _activeNode = node;
 
-        if(IsMobile)
+        if (_activeNode.Type.Id == "page")
+        {
+            navigationManager.NavigateTo(_activeNode.Id);
+        }
+        else
+        {
+            navigationManager.NavigateTo("");
+        }
+
+        if (IsMobile)
             CloseDrawer();
 
         OnActiveNodeChanged?.Invoke();

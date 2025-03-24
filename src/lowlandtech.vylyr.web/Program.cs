@@ -13,7 +13,7 @@ builder
 
 // Add device-specific services used by the LowlandTech.Vylyr.Core project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
-builder.Services.AddSingleton<AppVm>();
+builder.Services.AddScoped<AppVm>();
 builder.Services.AddMudServices();
 
 using var scope = builder.Services.BuildServiceProvider().CreateScope();
