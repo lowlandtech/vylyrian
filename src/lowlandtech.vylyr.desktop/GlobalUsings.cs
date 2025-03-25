@@ -1,5 +1,3 @@
-// Global using directives
-
-global using System.Drawing;
-global using System.Text;
-global using Photino.NET;
+global using Microsoft.Extensions.DependencyInjection;
+global using Photino.Blazor;
+global using System;
