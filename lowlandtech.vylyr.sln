@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowlandTech.Vylyr.Mobile", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shells", "Shells", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowlandTech.Vylyr.Desktop", "src\lowlandtech.vylyr.desktop\LowlandTech.Vylyr.Desktop.csproj", "{E80F3322-1998-A83B-B8D2-20E8CA22C253}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,18 +61,6 @@ Global
 		{D9E33CDB-5041-2FEF-4B58-8DD12A9700F5}.Release|x64.Build.0 = Release|Any CPU
 		{D9E33CDB-5041-2FEF-4B58-8DD12A9700F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9E33CDB-5041-2FEF-4B58-8DD12A9700F5}.Release|x86.Build.0 = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|x64.Build.0 = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Debug|x86.Build.0 = Debug|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|x64.ActiveCfg = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|x64.Build.0 = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|x86.ActiveCfg = Release|Any CPU
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,7 +70,6 @@ Global
 		{600B18FA-C8DE-4977-B43B-22CC3B7BE782} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D9E33CDB-5041-2FEF-4B58-8DD12A9700F5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{E80F3322-1998-A83B-B8D2-20E8CA22C253} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {079ABC60-9019-4D15-8CB5-7F553F499A9B}
