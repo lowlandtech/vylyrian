@@ -2,15 +2,16 @@ using System;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace LowlandTech.Vylyr;
-
-class Program : MauiApplication
+namespace LowlandTech.Vylyr.Mobile
 {
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
-
-    static void Main(string[] args)
+    internal class Program : MauiApplication
     {
-        var app = new Program();
-        app.Run(args);
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+
+        static void Main(string[] args)
+        {
+            var app = new Program();
+            app.Run(args);
+        }
     }
 }

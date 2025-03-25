@@ -1,9 +1,10 @@
-﻿namespace LowlandTech.Vylyr;
-
-public partial class MainPage : ContentPage
+﻿namespace LowlandTech.Vylyr.Mobile
 {
-    public MainPage()
+    public partial class MainPage : ContentPage
     {
-        InitializeComponent();
+        public MainPage()
+        {
+            InitializeComponent();
+        }
     }
 }

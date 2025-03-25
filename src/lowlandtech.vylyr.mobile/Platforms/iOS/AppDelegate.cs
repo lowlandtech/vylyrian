@@ -1,9 +1,10 @@
 ﻿using Foundation;
 
-namespace LowlandTech.Vylyr;
-
-[Register("AppDelegate")]
-public class AppDelegate : MauiUIApplicationDelegate
+namespace LowlandTech.Vylyr.Mobile
 {
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp().Result;
+    [Register("AppDelegate")]
+    public class AppDelegate : MauiUIApplicationDelegate
+    {
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    }
 }

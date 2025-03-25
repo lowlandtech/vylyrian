@@ -1,16 +1,17 @@
-using LowlandTech.Vylyr.Core.Services;
+using LowlandTech.Vylyr.Mobile.Shared.Services;
 
-namespace LowlandTech.Vylyr.Services;
-
-public class FormFactor : IFormFactor
+namespace LowlandTech.Vylyr.Mobile.Services
 {
-    public string GetFormFactor()
+    public class FormFactor : IFormFactor
     {
-        return DeviceInfo.Idiom.ToString();
-    }
+        public string GetFormFactor()
+        {
+            return DeviceInfo.Idiom.ToString();
+        }
 
-    public string GetPlatform()
-    {
-        return DeviceInfo.Platform.ToString() + " - " + DeviceInfo.VersionString;
+        public string GetPlatform()
+        {
+            return DeviceInfo.Platform.ToString() + " - " + DeviceInfo.VersionString;
+        }
     }
 }

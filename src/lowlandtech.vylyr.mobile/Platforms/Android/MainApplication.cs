@@ -1,15 +1,16 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace LowlandTech.Vylyr;
-
-[Application]
-public class MainApplication : MauiApplication
+namespace LowlandTech.Vylyr.Mobile
 {
-    public MainApplication(IntPtr handle, JniHandleOwnership ownership)
-        : base(handle, ownership)
+    [Application]
+    public class MainApplication : MauiApplication
     {
-    }
+        public MainApplication(IntPtr handle, JniHandleOwnership ownership)
+            : base(handle, ownership)
+        {
+        }
 
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp().Result;
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    }
 }

@@ -1,14 +1,15 @@
-﻿namespace LowlandTech.Vylyr;
-
-public partial class App : Application
+namespace LowlandTech.Vylyr.Mobile
 {
-    public App()
+    public partial class App : Application
     {
-        InitializeComponent();
-    }
+        public App()
+        {
+            InitializeComponent();
+        }
 
-    protected override Window CreateWindow(IActivationState? activationState)
-    {
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
         return new Window(new MainPage()) { Title = "LowlandTech.Vylyr" };
+        }
     }
 }
