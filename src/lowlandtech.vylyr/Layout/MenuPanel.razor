@@ -1,56 +1,92 @@
 @inject GraphContext Db
 @inject AppVm App
 
-<MudPaper Class="menu-panel pa-0">
-    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="px-4 py-2">
+<MudPaper Class="menu-panel pa-0 h-100 d-flex flex-column">
+
+    <!-- Header Buttons -->
+    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="pl-1 pr-4 py-2">
         @if (ShowBack)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="OnBack" Class="pl-0" />
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="OnBack" />
         }
         else
         {
             <div></div>
         }
+
         @if (App.IsMobile)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="OnClose" />
         }
     </MudStack>
 
-    <MudList T="GraphNode">
+    <!-- Main content (scrollable if needed) -->
+    <MudStack Class="flex-grow-1 overflow-auto">
         @if (_children == null)
         {
-            <MudProgressCircular />
+            <div class="d-flex justify-center pa-4">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
         }
         else
         {
-            @foreach (var child in _children)
-            {
-                @if (child.ChildCount > 0)
+            <MudList T="GraphNodeWithCount">
+                @foreach (var node in FilteredChildren)
                 {
-                    <MudListItem OnClick="() => OnNavigate.InvokeAsync(child)" Class="pl-4">
-                        <div style="display: flex; align-items: center; width: 100%;">
-                            <MudIcon Icon="@child.Type.Icon" />
-                            <MudText Class="ml-2">@child.Title</MudText>
-                            @if (child.ChildCount > 0)
+                    <MudListItem OnClick="() => TryNavigate(node)"
+                    Class="pl-4"
+                    Style="@GetListItemStyle(node)">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@node.Type.Icon" />
+                                <MudText Typo="Typo.body1">@node.Title</MudText>
+                            </MudStack>
+                            @if (node.ChildCount > 0)
                             {
-                                <MudBadge Class="mt-4 mr-7" Content="@child.ChildCount" Color="Color.Primary" Style="margin-left: auto;"/>
+                                <MudBadge Content="@node.ChildCount" Color="Color.Primary" Class="mr-7" />
                             }
-                        </div>
+                        </MudStack>
                     </MudListItem>
                 }
-                else
-                {
-                    <MudListItem OnClick="() => App.SetActiveNode(child)" Class="pl-4">
-                        <div style="display: flex; align-items: center; width: 100%;">
-                            <MudIcon Icon="@child.Type.Icon" />
-                            <MudText Class="ml-2">@child.Title</MudText>
-                        </div>
-                    </MudListItem>
-                }
-            }
+            </MudList>
         }
-    </MudList>
+    </MudStack>
+
+    <!-- Search + Add section pinned to bottom -->
+    <div class="px-2 pt-2 pb-3 border-top">
+        <EditForm Model="_newNode">
+            <MudTextField @bind-Value="_newNode.Title"
+                          Placeholder="Search or create item..."
+                          Variant="Variant.Filled"
+                          Margin="Margin.Dense"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          Class="w-full"
+                          OnKeyDown="@HandleSearchEnter" />
+
+            @if (CanCreateNode)
+            {
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="mt-2">
+                    <MudSelect T="GraphNodeType" @bind-Value="_newNode.Type" Dense="true" Class="flex-grow-1">
+                        @foreach (var type in _availableTypes)
+                        {
+                            <MudSelectItem T="GraphNodeType" Value="@type">@type.Label</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudButton Color="Color.Primary"
+                               Variant="Variant.Text"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="CreateNewNode">
+                        Add “@_newNode.Title”
+                    </MudButton>
+                </MudStack>
+            }
+        </EditForm>
+
+    </div>
+
 </MudPaper>
 
 @code {
@@ -61,21 +97,49 @@
     [Parameter] public bool ShowBack { get; set; } = true;
 
     private List<GraphNodeWithCount>? _children;
+    private string SearchText { get; set; } = "";
+    private List<GraphNodeType> _availableTypes = new();
+    private GraphNodeType? _selectedType;
+    private GraphNode _newNode = new();
+
+    private List<GraphNodeWithCount> FilteredChildren =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? _children ?? []
+            : _children?.Where(c =>
+                  c.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
+
+    private bool CanCreateNode =>
+        !string.IsNullOrWhiteSpace(_newNode.Title)
+        && _children != null
+        && !_children.Any(c => string.Equals(c.Title, _newNode.Title, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
+    {
+        _availableTypes = await Db.NodeTypes.OrderBy(t => t.Label).ToListAsync();
+        var defaultType = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.FirstOrDefault();
+
+        _newNode = new GraphNode
+        {
+            Title = "",
+            Type = defaultType
+        };
+
+        await LoadChildrenAsync();
+    }
+
+    private async Task LoadChildrenAsync()
     {
         _children = await Db.Edges
             .Where(e => e.FromId == CurrentNode.Id)
             .Select(e => e.To)
-            //.Where(n => n.TypeId == "list")
             .Select(n => new GraphNodeWithCount
-            {
-                Id = n.Id,
-                Title = n.Title,
-                Type = n.Type,
-                Route = n.Route,
-                ChildCount = Db.Edges.Count(e => e.FromId == n.Id)
-            })
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Type = n.Type,
+                    Route = n.Route,
+                    ChildCount = Db.Edges.Count(e => e.FromId == n.Id)
+                })
             .ToListAsync();
     }
 
@@ -85,7 +149,69 @@
         {
             await OnNavigate.InvokeAsync(node);
         }
+        else
+        {
+            App.SetActiveNode(node);
+        }
     }
+
+    private string GetListItemStyle(GraphNodeWithCount node)
+    {
+        var isActive = App.ActiveNode?.Id == node.Id;
+        var textColor = App.IsDarkMode
+            ? App.Theme.PaletteDark.TextPrimary
+            : App.Theme.PaletteLight.AppbarText;
+
+        var background = isActive ? (App.IsDarkMode ? "#2a2833" : "#f0f0f0") : "transparent";
+        return $"color: {textColor}; background-color: {background}; transition: background-color 0.2s;";
+    }
+
+    private async Task HandleSearchEnter(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter" && CanCreateNode)
+        {
+            await CreateNewNode();
+            SearchText = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    private async Task CreateNewNode()
+    {
+        if (_newNode.Type == null || string.IsNullOrWhiteSpace(_newNode.Title))
+            return;
+
+        var newNode = new GraphNode
+        {
+            Id = Guid.NewGuid().ToString(),
+            Title = _newNode.Title,
+            Type = _newNode.Type
+        };
+
+        Db.Nodes.Add(newNode);
+        Db.Edges.Add(new GraphEdge { FromId = CurrentNode.Id, ToId = newNode.Id });
+
+        await Db.SaveChangesAsync();
+
+        _children ??= new();
+        _children.Add(new GraphNodeWithCount
+        {
+            Id = newNode.Id,
+            Title = newNode.Title,
+            Type = newNode.Type,
+            ChildCount = 0
+        });
+
+        // Reset the model to refresh the form
+        _newNode = new GraphNode
+        {
+            Title = string.Empty,
+            Type = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.FirstOrDefault()
+        };
+
+        StateHasChanged();
+    }
+
 
     private class GraphNodeWithCount : GraphNode
     {

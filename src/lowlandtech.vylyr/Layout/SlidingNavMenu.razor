@@ -3,7 +3,7 @@
 
 @if (App.CurrentNode is not null)
 {
-    <MudPaper Class="menu-container">
+    <MudPaper Class="menu-container h-100">
         <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (App.NavStack.Count - 1))%);">
             @for (int i = 0; i < App.NavStack.Count; i++)
             {
