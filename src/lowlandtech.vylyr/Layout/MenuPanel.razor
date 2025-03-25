@@ -1,9 +1,10 @@
 @inject GraphContext Db
 @inject AppVm App
+@inject IJSRuntime Js
 
 <MudPaper Class="menu-panel pa-0 h-100 d-flex flex-column">
 
-    <!-- Header Buttons -->
+    <!-- Header -->
     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="pl-1 pr-4 py-2">
         @if (ShowBack)
         {
@@ -20,7 +21,7 @@
         }
     </MudStack>
 
-    <!-- Scrollable list area -->
+    <!-- Content -->
     <MudStack Class="flex-grow-1 overflow-auto">
         @if (_children == null)
         {
@@ -52,13 +53,13 @@
         }
     </MudStack>
 
-    <!-- Search + Add section pinned to bottom -->
+    <!-- Footer -->
     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
             <MudTextField @ref="_inputRef"
-              @bind-Value="_newNode.Title"
+                @onfocus="OnInputFocus"
+                @bind-Value="_newNode.Title"
                 Placeholder="Search or create item..."
-                OnBlur="HandleInputFocus"
                 Variant="Variant.Filled"
                 Margin="Margin.Dense"
                 Adornment="Adornment.Start"
@@ -86,38 +87,27 @@
                 </MudStack>
             }
         </EditForm>
-
     </div>
 
 </MudPaper>
-<style>
-    .search-footer {
-        position: sticky;
-        bottom: 0;
-        background: white;
-        z-index: 10;
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-</style>
 @code {
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public bool ShowBack { get; set; } = true;
-    [Inject] private IJSRuntime JS { get; set; } = default!;
+
     private MudTextField<string>? _inputRef;
     private List<GraphNodeWithCount>? _children;
-    private string SearchText { get; set; } = "";
     private List<GraphNodeType> _availableTypes = new();
     private GraphNodeType? _selectedType;
     private GraphNode _newNode = new();
 
     private List<GraphNodeWithCount> FilteredChildren =>
-        string.IsNullOrWhiteSpace(SearchText)
+        string.IsNullOrWhiteSpace(_newNode.Title)
             ? _children ?? []
             : _children?.Where(c =>
-                  c.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
+                  c.Title.Contains(_newNode.Title, StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
 
     private bool CanCreateNode =>
         !string.IsNullOrWhiteSpace(_newNode.Title)
@@ -182,14 +172,13 @@
         if (args.Key == "Enter" && CanCreateNode)
         {
             await CreateNewNode();
-            SearchText = string.Empty;
-            StateHasChanged();
         }
     }
 
-    private async Task HandleInputFocus(FocusEventArgs args)
+    private async Task ScrollInputIntoView()
     {
-        await JS.InvokeVoidAsync("scrollIntoViewIfNeeded", _inputRef);
+        await Task.Delay(100); // Let Blazor re-render the input
+        await OnInputFocus(new FocusEventArgs());
     }
 
     private async Task CreateNewNode()
@@ -228,6 +217,10 @@
         StateHasChanged();
     }
 
+    private async Task OnInputFocus(FocusEventArgs args)
+    {
+        await Js.InvokeVoidAsync("scrollInputIntoView", _inputRef!.InputReference!.ElementReference);
+    }
 
     private class GraphNodeWithCount : GraphNode
     {
