@@ -42,6 +42,10 @@ public static class MauiProgram
         await db.Database.EnsureCreatedAsync();
         await db.UseCaseData();
 
+        var appVm = scope.ServiceProvider.GetRequiredService<AppVm>();
+        appVm.IsNativeMobile = DeviceInfo.Idiom == DeviceIdiom.Phone;
+        appVm.IsMobile = appVm.IsNativeMobile; // default to native platform's behavior
+
         return app;
     }
 }

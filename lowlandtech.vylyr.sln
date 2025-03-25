@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowlandTech.Vylyr.Web", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowlandTech.Core", "src\lowlandtech.core\LowlandTech.Core.csproj", "{F57ABA24-DBF4-224E-D200-3B56A0A7E33E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowlandTech.Vylyr.Desktop", "src\lowlandtech.vylyr.desktop\LowlandTech.Vylyr.Desktop.csproj", "{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,18 @@ Global
 		{F57ABA24-DBF4-224E-D200-3B56A0A7E33E}.Release|x64.Build.0 = Release|Any CPU
 		{F57ABA24-DBF4-224E-D200-3B56A0A7E33E}.Release|x86.ActiveCfg = Release|Any CPU
 		{F57ABA24-DBF4-224E-D200-3B56A0A7E33E}.Release|x86.Build.0 = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Debug|x86.Build.0 = Debug|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|x64.Build.0 = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +95,7 @@ Global
 		{045CCE99-129C-490E-95F7-13BD76D04C74} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{600B18FA-C8DE-4977-B43B-22CC3B7BE782} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{F57ABA24-DBF4-224E-D200-3B56A0A7E33E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{1C44B41F-F343-471B-AE05-6A06D9A1C5FE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {079ABC60-9019-4D15-8CB5-7F553F499A9B}

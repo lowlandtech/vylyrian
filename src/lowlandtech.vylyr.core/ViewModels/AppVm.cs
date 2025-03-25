@@ -124,9 +124,15 @@ public class AppVm(NavigationManager navigationManager)
     public bool HasBack => _navStack.Count > 1;
 
     /// <summary>
-    /// True if the app is running on a mobile device.
+    /// Indicates if the current *platform* is mobile (MAUI native check).
+    /// </summary>
+    public bool IsNativeMobile { get; set; }
+
+    /// <summary>
+    /// Indicates if the UI should behave in a mobile layout (web or native).
     /// </summary>
     public bool IsMobile { get; set; }
+
 
     /// <summary>
     /// Occurs when the navigation stack changes (used by SlidingNavMenu).
