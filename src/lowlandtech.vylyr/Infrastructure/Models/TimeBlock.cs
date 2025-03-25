@@ -1,4 +1,4 @@
-﻿namespace LowlandTech.Vylyr.Core.Infrastructure.Models;
+﻿namespace LowlandTech.Vylyr.Infrastructure.Models;
 
 public class TimeBlock
 {

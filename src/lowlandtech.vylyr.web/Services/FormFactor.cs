@@ -1,4 +1,4 @@
-using LowlandTech.Vylyr.Core.Services;
+using LowlandTech.Vylyr.Services;
 
 namespace LowlandTech.Vylyr.Web.Services;
 

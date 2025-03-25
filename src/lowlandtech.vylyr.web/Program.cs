@@ -11,7 +11,7 @@ builder
         options.UseInMemoryDatabase("VylyrGraph");
     });
 
-// Add device-specific services used by the LowlandTech.Vylyr.Core project
+// Add device-specific services used by the LowlandTech.Vylyr project
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddScoped<AppVm>();
 builder.Services.AddMudServices();
@@ -38,6 +38,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(LowlandTech.Vylyr.Core._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(LowlandTech.Vylyr._Imports).Assembly);
 
 app.Run();

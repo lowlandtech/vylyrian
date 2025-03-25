@@ -1,5 +1,3 @@
-using LowlandTech.Vylyr.Mobile.Shared.Services;
-
 namespace LowlandTech.Vylyr.Mobile.Services
 {
     public class FormFactor : IFormFactor

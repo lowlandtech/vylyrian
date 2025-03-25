@@ -1,4 +1,4 @@
-﻿namespace LowlandTech.Vylyr;
+﻿namespace LowlandTech.Vylyr.Mobile;
 
 public static class MauiProgram
 {
@@ -19,11 +19,10 @@ public static class MauiProgram
                 options.UseInMemoryDatabase("VylyrGraph");
             });
 
-        // Add device-specific services used by the LowlandTech.Vylyr.Core project
+        // Add device-specific services used by the LowlandTech.Vylyr project
         builder.Services.AddSingleton<IFormFactor, FormFactor>();
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddMudServices();
-        builder.Services.AddSingleton<IFramework,Framework>();
         builder.Services.AddScoped<AppVm>();
 
 #if DEBUG

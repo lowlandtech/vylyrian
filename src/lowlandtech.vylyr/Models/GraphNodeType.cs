@@ -1,4 +1,4 @@
-﻿namespace LowlandTech.Vylyr.Core.Models;
+﻿namespace LowlandTech.Vylyr.Models;
 
 public class GraphNodeType
 {

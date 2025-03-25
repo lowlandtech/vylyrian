@@ -1,4 +1,4 @@
-namespace LowlandTech.Vylyr.Core.Services;
+namespace LowlandTech.Vylyr.Services;
 
 public interface IFormFactor
 {

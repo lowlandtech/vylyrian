@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lowlandtech.vylyr.core\LowlandTech.Vylyr.Core.csproj" />
+    <ProjectReference Include="..\LowlandTech.Vylyr\LowlandTech.Vylyr.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace LowlandTech.Vylyr.Core.Infrastructure;
+﻿namespace LowlandTech.Vylyr.Infrastructure;
 
 public class GraphContext(DbContextOptions<GraphContext> options) : DbContext(options)
 {

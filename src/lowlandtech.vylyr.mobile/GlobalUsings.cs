@@ -1,9 +1,8 @@
-global using LowlandTech.Core.Abstractions;
-global using LowlandTech.Vylyr.Core.Infrastructure;
-global using LowlandTech.Vylyr.Core.Pages;
-global using LowlandTech.Vylyr.Core.Services;
-global using LowlandTech.Vylyr.Core.ViewModels;
+global using LowlandTech.Vylyr.Infrastructure;
+global using LowlandTech.Vylyr.Mobile.Services;
+global using LowlandTech.Vylyr.Pages;
 global using LowlandTech.Vylyr.Services;
+global using LowlandTech.Vylyr.ViewModels;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using MudBlazor.Services;

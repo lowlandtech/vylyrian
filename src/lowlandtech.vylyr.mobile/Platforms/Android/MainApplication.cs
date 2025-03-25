@@ -11,6 +11,6 @@ namespace LowlandTech.Vylyr.Mobile
         {
         }
 
-        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp().Result;
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
@@ -68,8 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lowlandtech.core\LowlandTech.Core.csproj" />
-    <ProjectReference Include="..\lowlandtech.vylyr.core\LowlandTech.Vylyr.Core.csproj" />
+    <ProjectReference Include="..\LowlandTech.Vylyr\LowlandTech.Vylyr.csproj" />
   </ItemGroup>
 
 </Project>
