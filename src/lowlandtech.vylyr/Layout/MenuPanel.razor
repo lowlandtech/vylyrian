@@ -56,14 +56,14 @@
     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
             <MudTextField @bind-Value="_newNode.Title"
-                          Placeholder="Search or create item..."
-                          Variant="Variant.Filled"
-                          Margin="Margin.Dense"
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          Immediate="true"
-                          Class="w-full"
-                          OnKeyDown="@HandleSearchEnter" />
+                Placeholder="Search or create item..."
+                Variant="Variant.Filled"
+                Margin="Margin.Dense"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                Immediate="true"
+                Class="w-full"
+                OnKeyDown="@HandleSearchEnter" />
 
             @if (CanCreateNode)
             {
@@ -116,7 +116,7 @@
     protected override async Task OnInitializedAsync()
     {
         _availableTypes = await Db.NodeTypes.OrderBy(t => t.Label).ToListAsync();
-        var defaultType = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.FirstOrDefault();
+        var defaultType = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.First();
 
         _newNode = new GraphNode
         {
