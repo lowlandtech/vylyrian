@@ -20,7 +20,7 @@
         }
     </MudStack>
 
-    <!-- Main content (scrollable if needed) -->
+    <!-- Scrollable list area -->
     <MudStack Class="flex-grow-1 overflow-auto">
         @if (_children == null)
         {
@@ -55,8 +55,10 @@
     <!-- Search + Add section pinned to bottom -->
     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
-            <MudTextField @bind-Value="_newNode.Title"
+            <MudTextField @ref="_inputRef"
+              @bind-Value="_newNode.Title"
                 Placeholder="Search or create item..."
+                OnBlur="HandleInputFocus"
                 Variant="Variant.Filled"
                 Margin="Margin.Dense"
                 Adornment="Adornment.Start"
@@ -79,7 +81,7 @@
                                Variant="Variant.Text"
                                StartIcon="@Icons.Material.Filled.Add"
                                OnClick="CreateNewNode">
-                        Add “@_newNode.Title”
+                        Add ï¿½@_newNode.Titleï¿½
                     </MudButton>
                 </MudStack>
             }
@@ -88,14 +90,23 @@
     </div>
 
 </MudPaper>
-
+<style>
+    .search-footer {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        z-index: 10;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+</style>
 @code {
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public bool ShowBack { get; set; } = true;
-
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    private MudTextField<string>? _inputRef;
     private List<GraphNodeWithCount>? _children;
     private string SearchText { get; set; } = "";
     private List<GraphNodeType> _availableTypes = new();
@@ -174,6 +185,11 @@
             SearchText = string.Empty;
             StateHasChanged();
         }
+    }
+
+    private async Task HandleInputFocus(FocusEventArgs args)
+    {
+        await JS.InvokeVoidAsync("scrollIntoViewIfNeeded", _inputRef);
     }
 
     private async Task CreateNewNode()
