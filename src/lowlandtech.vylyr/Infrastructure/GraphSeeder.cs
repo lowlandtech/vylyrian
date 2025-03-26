@@ -49,7 +49,8 @@ public static class GraphSeeder
                         Id = "page",
                         Label = "Page",
                         Icon = Icons.Material.Filled.Pages,
-                        ComponentName = "HomeView"
+                        ComponentName = "HomeView",
+                        AllowDeletion = false,
                     }
                 );
 
