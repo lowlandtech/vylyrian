@@ -1,6 +1,7 @@
 @inject GraphContext Db
 @inject AppVm App
 @inject IJSRuntime Js
+@inject IDialogService DialogService
 
 <MudPaper Class="menu-panel pa-0 h-100 d-flex flex-column">
 
@@ -34,20 +35,29 @@
             <MudList T="GraphNodeWithCount">
                 @foreach (var node in FilteredChildren)
                 {
-                    <MudListItem OnClick="() => TryNavigate(node)"
-                    Class="pl-4"
-                    Style="@GetListItemStyle(node)">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
-                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                                <MudIcon Icon="@node.Type.Icon" />
-                                <MudText Typo="Typo.body1">@node.Title</MudText>
+                    <MudSwipeArea OnSwipeEnd="e => HandleSwipeEnd(e, node)">
+                        <MudListItem OnClick="() => TryNavigate(node)"
+                                     Class="pl-4"
+                                     Style="@GetListItemStyle(node)">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@node.Type.Icon" />
+                                    <MudText Typo="Typo.body1">@node.Title</MudText>
+                                </MudStack>
+                                @if (node.ChildCount > 0)
+                                {
+                                    <MudBadge Content="@node.ChildCount" Color="Color.Primary" Class="mr-7" />
+                                }
+                                @if (!App.IsMobile)
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   OnClick="() => ConfirmDelete(node)" />
+                                }
                             </MudStack>
-                            @if (node.ChildCount > 0)
-                            {
-                                <MudBadge Content="@node.ChildCount" Color="Color.Primary" Class="mr-7" />
-                            }
-                        </MudStack>
-                    </MudListItem>
+                        </MudListItem>
+                    </MudSwipeArea>
                 }
             </MudList>
         }
@@ -220,6 +230,42 @@
     private async Task OnInputFocus(FocusEventArgs args)
     {
         await Js.InvokeVoidAsync("scrollInputIntoView", _inputRef!.InputReference!.ElementReference);
+    }
+
+    private async Task ConfirmDelete(GraphNodeWithCount node)
+    {
+        var parameters = new DialogParameters { ["Node"] = node };
+        var options = new DialogOptions { CloseButton = true };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Delete item?", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await DeleteNode(node);
+        }
+    }
+
+    private async Task DeleteNode(GraphNodeWithCount node)
+    {
+        var edge = await Db.Edges.FirstOrDefaultAsync(e => e.FromId == CurrentNode.Id && e.ToId == node.Id);
+        var toNode = await Db.Nodes.FirstOrDefaultAsync(n => n.Id == node.Id);
+
+        if (edge != null) Db.Edges.Remove(edge);
+        if (toNode != null) Db.Nodes.Remove(toNode);
+
+        await Db.SaveChangesAsync();
+
+        _children?.RemoveAll(c => c.Id == node.Id);
+        StateHasChanged();
+    }
+
+    private async Task HandleSwipeEnd(SwipeEventArgs e, GraphNodeWithCount node)
+    {
+        if (e.SwipeDirection == SwipeDirection.RightToLeft)
+        {
+            await ConfirmDelete(node);
+        }
     }
 
     private class GraphNodeWithCount : GraphNode
