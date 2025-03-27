@@ -21,4 +21,10 @@
     <PackageReference Include="MudBlazor" Version="8.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.MacCatalyst">
+      <HintPath>..\..\..\..\Program Files\dotnet\packs\Microsoft.MacCatalyst.Ref.net9.0_18.2\18.2.9180\ref\net9.0\Microsoft.MacCatalyst.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

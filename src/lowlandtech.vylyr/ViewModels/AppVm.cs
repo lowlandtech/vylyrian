@@ -65,6 +65,20 @@ public class AppVm(NavigationManager navigationManager)
     };
 
     /// <summary>
+    /// Gets JsRuntime.
+    /// </summary>
+    private IJSRuntime? _js;
+
+    /// <summary>
+    /// Initializes JSContext.
+    /// </summary>
+    /// <param name="js"></param>
+    public void InitializeJs(IJSRuntime js)
+    {
+        _js = js;
+    }
+
+    /// <summary>
     /// Occurs when the layout or theme state changes (used to trigger UI updates).
     /// </summary>
     public event Action? OnChange;
@@ -72,20 +86,28 @@ public class AppVm(NavigationManager navigationManager)
     /// <summary>
     /// Toggle drawer open/close state.
     /// </summary>
-    public void ToggleDrawer()
+    public async Task ToggleDrawer()
     {
         DrawerOpen = !DrawerOpen;
+
+        if (IsMobile)
+        {
+            await _js!.InvokeVoidAsync("setBodyScrollLock", DrawerOpen);
+        }
+
         OnChange?.Invoke();
     }
 
     /// <summary>
     /// Explicitly close the drawer.
     /// </summary>
-    public void CloseDrawer()
+    public async Task CloseDrawer()
     {
         if (DrawerOpen)
         {
             DrawerOpen = false;
+            if (IsMobile)
+                await _js!.InvokeVoidAsync("setBodyScrollLock", false);
             OnChange?.Invoke();
         }
     }

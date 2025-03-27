@@ -1,7 +1,7 @@
 @inject AppVm App
 
 <MudDrawer @bind-Open="App.DrawerOpen"
-           Overlay="true"
+           Overlay="false"
            Elevation="1"
            ClipMode="DrawerClipMode.Always"
            Anchor="Anchor.Left"
@@ -11,7 +11,22 @@
            @attributes="UserAttributes">
     @ChildContent
 </MudDrawer>
+<style>
+    @@media (max-width: 960px) {
+        .mud-drawer-custom.mud-drawer--open {
+            width: 100% !important;
+            max-width: 100% !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            z-index: 1300; /* ensure it's above appbar */
+        }
 
+        .mud-drawer-custom.mud-drawer--close {
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+    }
+</style>
 @code {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UserAttributes { get; set; } = new();

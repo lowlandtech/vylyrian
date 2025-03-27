@@ -3,11 +3,13 @@
 public partial class MainLayout : IDisposable
 {
     [Inject] private AppVm App { get; set; } = default!;
+    [Inject] private IJSRuntime Js { get; set; } = default!;
 
     private string DrawerIcon => App.DrawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu;
 
     protected override void OnInitialized()
     {
+        App.InitializeJs(Js);
         App.OnChange += () => InvokeAsync(StateHasChanged);
     }
 
@@ -25,4 +27,5 @@ public partial class MainLayout : IDisposable
         StateHasChanged();
         return Task.CompletedTask;
     }
+
 }
