@@ -38,23 +38,34 @@
                     <MudSwipeArea OnSwipeEnd="e => HandleSwipeEnd(e, node)">
                         <MudListItem OnClick="() => TryNavigate(node)"
                                      Class="pl-4"
-                                     Style="@GetListItemStyle(node)">
+                                     Style="@GetListItemStyle(node)" Gutters="false">
                             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="w-100">
                                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                                     <MudIcon Icon="@node.Type.Icon" />
                                     <MudText Typo="Typo.body1">@node.Title</MudText>
                                 </MudStack>
-                                @if (node.ChildCount > 0)
-                                {
-                                    <MudBadge Content="@node.ChildCount" Color="Color.Primary" Class="mr-7" />
-                                }
-                                @if (!App.IsMobile && node.Type.AllowDeletion)
-                                {
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                                   Color="Color.Error"
-                                                   Size="Size.Small"
-                                                   OnClick="() => ConfirmDelete(node)" />
-                                }
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                                    @if (node.ChildCount > 0)
+                                    {
+                                        <MudBadge Content="@node.ChildCount" Color="Color.Primary" Class="@(App.IsMobile ? "mt-3 mr-11" : "mt-3 mr-2")" />
+                                    }
+                                    @if (!App.IsMobile && node.Type.AllowDeletion)
+                                    {
+                                        <MudMenu Icon="@Icons.Material.Filled.MoreVert"
+                                                 Dense="true"
+                                                 Size="Size.Small"
+                                                 Class="p-1"
+                                                 AnchorOrigin="Origin.TopRight"
+                                                 TransformOrigin="Origin.TopRight">
+                                            <MudMenuItem OnClick="() => ConfirmDelete(node)">
+                                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Delete" Size="Size.Small" />
+                                                    <MudText>Delete</MudText>
+                                                </MudStack>
+                                            </MudMenuItem>
+                                        </MudMenu>
+                                    }
+                                </MudStack>
                             </MudStack>
                         </MudListItem>
                     </MudSwipeArea>
@@ -67,16 +78,16 @@
     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
             <MudTextField @ref="_inputRef"
-                @onfocus="OnInputFocus"
-                @bind-Value="_newNode.Title"
-                Placeholder="Search or create item..."
-                Variant="Variant.Filled"
-                Margin="Margin.Dense"
-                Adornment="Adornment.Start"
-                AdornmentIcon="@Icons.Material.Filled.Search"
-                Immediate="true"
-                Class="w-full"
-                OnKeyDown="@HandleSearchEnter" />
+                          @onfocus="OnInputFocus"
+                          @bind-Value="_newNode.Title"
+                          Placeholder="Search or create item..."
+                          Variant="Variant.Filled"
+                          Margin="Margin.Dense"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          Class="w-full"
+                          OnKeyDown="@HandleSearchEnter" />
 
             @if (CanCreateNode)
             {
@@ -100,6 +111,11 @@
     </div>
 
 </MudPaper>
+@* <style>
+    .mud-menu > .mud-button-root {
+        padding: 0 12px 0 12px;
+    }
+</style> *@
 @code {
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
