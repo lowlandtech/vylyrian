@@ -1,5 +1,6 @@
 global using LowlandTech.Vylyr.Components;
 global using LowlandTech.Vylyr.Infrastructure;
+global using LowlandTech.Vylyr.Infrastructure.Enums;
 global using LowlandTech.Vylyr.Models;
 global using LowlandTech.Vylyr.ViewModels;
 global using Microsoft.AspNetCore.Components;
