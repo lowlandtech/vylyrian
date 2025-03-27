@@ -1,8 +1,37 @@
-﻿
-<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
-</MudNavMenu>
+@inject AppVm App
+@inject GraphContext Db
 
+@if (App.CurrentNode is not null)
+{
+    <MudPaper Class="menu-container h-100">
+        <div class="menu-panel-wrapper" style="transform: translateX(@(-100 * (App.NavStack.Count - 1))%);">
+            @for (int i = 0; i < App.NavStack.Count; i++)
+            {
+                <MenuPanel 
+                    CurrentNode="App.NavStack[i]"
+                    OnNavigate="App.PushNode"
+                    OnBack="App.PopNode"
+                    ShowBack="@(i > 0)" />
+            }
+        </div>
+    </MudPaper>
+}
+else
+{
+    <MudProgressCircular />
+}
 
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        App.OnChange += ()=> InvokeAsync(StateHasChanged);
+        App.OnMenuChange += ()=> InvokeAsync(StateHasChanged);
+        await App.InitMenuAsync(Db);
+    }
+
+    public void Dispose()
+    {
+        App.OnChange -= () => InvokeAsync(StateHasChanged);
+        App.OnMenuChange -= () => InvokeAsync(StateHasChanged);
+    }
+}

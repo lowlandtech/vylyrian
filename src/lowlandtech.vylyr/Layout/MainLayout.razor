@@ -10,7 +10,7 @@
     <!-- AppBar -->
     <MudAppBar Elevation="1" Dense="true">
         <MudIconButton Color="Color.Inherit"
-                       Class="ml-n4 mr-1"
+                       Class="@(App.IsMobile ? "ml-n3 mr-1" : "ml-n5 mr-1")"
                        OnClick="@App.ToggleDrawer">
             <MudIcon Icon="@DrawerIcon"
                      Class="@(App.DrawerOpen ? "drawer-icon rotate-icon" : "drawer-icon")" />
@@ -24,16 +24,9 @@
     </MudAppBar>
 
     <!-- Drawer / Sidebar -->
-    <MudDrawer @bind-Open="App.DrawerOpen"
-               Class="mud-drawer-custom h-100"
-               Overlay="true"
-               Variant="@(App.IsMobile ? DrawerVariant.Temporary : DrawerVariant.Responsive)"
-               Width="@(App.IsMobile ? "100%" : "350px")"
-               Anchor="Anchor.Left"
-               Elevation="1"
-               ClipMode="DrawerClipMode.Always">
+    <VylDrawer>
         <SlidingNavMenu />
-    </MudDrawer>
+    </VylDrawer>
 
     <!-- Main Content -->
     <MudMainContent Class="mt-16 pa-4">
@@ -50,10 +43,6 @@
         .mud-drawer-custom.mud-drawer--close {
             transition: width 0.3s ease, height 0.3s ease;
         }
-    }
-
-    .mud-drawer-custom {
-        height: 100% !important;
     }
 
     .menu-container {

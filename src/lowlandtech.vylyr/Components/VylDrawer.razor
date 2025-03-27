@@ -1,0 +1,21 @@
+@inject AppVm App
+
+<MudDrawer @bind-Open="App.DrawerOpen"
+           Overlay="true"
+           Elevation="1"
+           ClipMode="DrawerClipMode.Always"
+           Anchor="Anchor.Left"
+           Variant="@(App.IsMobile ? DrawerVariant.Temporary : DrawerVariant.Responsive)"
+           Width="@(App.IsMobile ? "100%" : "350px")"
+           Class="mud-drawer-custom"
+           @attributes="UserAttributes">
+    @ChildContent
+</MudDrawer>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UserAttributes { get; set; } = new();
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
