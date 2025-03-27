@@ -5,7 +5,6 @@ public partial class MenuPanel
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public bool ShowBack { get; set; } = true;
 
     [Inject] private IDialogService DialogService { get; set; } = default!;

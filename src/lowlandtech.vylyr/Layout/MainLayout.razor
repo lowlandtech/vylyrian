@@ -8,36 +8,43 @@
 <MudSnackbarProvider />
 
 <MudLayout>
+    <!-- AppBar -->
     <MudAppBar Elevation="1" Dense="true">
         <MudIconButton 
-            Icon="@Icons.Material.Filled.Menu"
             Color="Color.Inherit"
-            Edge="Edge.Start"
-            OnClick="@App.ToggleDrawer" />
+            Class="ml-n4 mr-1 drawer-toggle"
+            Style="transition: transform 0.3s ease;"
+            OnClick="@App.ToggleDrawer">
+            <MudIcon Icon="@_drawerIcon" Class="drawer-icon" />
+        </MudIconButton>
         <MudText Typo="Typo.h5" Class="ml-3">Vylyr</MudText>
         <MudSpacer />
-        <MudIconButton 
-            Icon="@App.DarkLightModeButtonIcon" 
-            Color="Color.Inherit"
-            OnClick="App.ToggleDarkMode" />
+        <MudIconButton Icon="@App.DarkLightModeButtonIcon"
+                       Color="Color.Inherit"
+                       OnClick="App.ToggleDarkMode" />
     </MudAppBar>
-    <MudDrawer 
-        @bind-Open="App.DrawerOpen"
-        Class="mud-drawer-custom h-100"
-        Variant="@(App.IsMobile ? DrawerVariant.Temporary : DrawerVariant.Responsive)"
-        Width="350px"
-        Anchor="Anchor.Left"
-        Elevation="1"
-        ClipMode="DrawerClipMode.Always">
-        <SlidingNavMenu/>
+
+    <!-- Drawer / Sidebar -->
+    <MudDrawer @bind-Open="App.DrawerOpen"
+               Class="mud-drawer-custom h-100"
+               Overlay="true"
+               Variant="@(App.IsMobile ? DrawerVariant.Temporary : DrawerVariant.Responsive)"
+               Width="@(App.IsMobile ? "100%" : "350px")"
+               Anchor="Anchor.Left"
+               Elevation="1"
+               ClipMode="DrawerClipMode.Always">
+        <SlidingNavMenu />
     </MudDrawer>
+
+    <!-- Main Content -->
     <MudMainContent Class="mt-16 pa-4">
         @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
-    
+    private string _drawerIcon => App.DrawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu;
+
     protected override void OnInitialized()
     {
         App.OnChange += () => InvokeAsync(StateHasChanged);
@@ -48,17 +55,11 @@
         App.OnChange -= () => InvokeAsync(StateHasChanged);
     }
 
-    /// <summary>
-    /// Initializes the app state manager.
-    /// </summary>
-    /// <param name="breakpoint"></param>
-    /// <returns></returns>
     public Task HandleBreakpointChanged(Breakpoint breakpoint)
     {
-        // Only override for Blazor Web/Desktop
         if (App.IsNativeMobile) return Task.CompletedTask;
 
-        App.IsMobile = breakpoint <= Breakpoint.Sm; // or Xs, depending on your needs
+        App.IsMobile = breakpoint <= Breakpoint.Sm;
         App.DrawerOpen = !App.IsMobile;
         StateHasChanged();
         return Task.CompletedTask;
@@ -77,6 +78,10 @@
         }
     }
 
+    .mud-drawer-custom {
+        height: 100% !important;
+    }
+
     .menu-container {
         overflow: hidden;
         position: relative;
@@ -89,6 +94,7 @@
         flex-direction: row;
         transition: transform 0.3s ease;
         width: 100%;
+        height: 100% !important;
     }
 
     .menu-panel {
@@ -96,13 +102,19 @@
         flex-shrink: 0;
     }
 
-    .mud-drawer-content {
-        height: 100% !important;
+    .drawer-toggle {
+        transition: all 0.25s ease;
     }
 
-    .menu-panel-wrapper {
-        height: 100% !important;
+    .drawer-icon {
+        font-size: 24px;
+        transition: transform 0.25s ease, opacity 0.25s ease;
     }
+
+    .drawer-toggle:hover .drawer-icon {
+        transform: rotate(90deg);
+    }
+
 </style>
 
 <div id="blazor-error-ui">
