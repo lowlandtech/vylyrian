@@ -14,9 +14,13 @@ public partial class MenuPanel
 
     private List<GraphNodeType> _availableTypes = [];
     private List<GraphNodeWithCount>? _children;
-    private MudTextField<string>? _inputRef;
+
     private GraphNodeType? _selectedType;
     private GraphNode _newNode = new();
+    private FooterMode _footerMode = FooterMode.None;
+
+    private void ShowFilterFooter() => _footerMode = FooterMode.Filter;
+    private void ShowNewNodeFooter() => _footerMode = FooterMode.NewNode;
 
     private List<GraphNodeWithCount> FilteredChildren =>
         string.IsNullOrWhiteSpace(_newNode.Title)
@@ -78,16 +82,8 @@ public partial class MenuPanel
             ? App.Theme.PaletteDark.TextPrimary
             : App.Theme.PaletteLight.AppbarText;
 
-        var background = isActive ? (App.IsDarkMode ? "#2a2833" : "#f0f0f0") : "transparent";
+        var background = isActive ? App.IsDarkMode ? "#2a2833" : "#f0f0f0" : "transparent";
         return $"color: {textColor}; background-color: {background}; transition: background-color 0.2s;";
-    }
-
-    private async Task HandleSearchEnter(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter" && CanCreateNode)
-        {
-            await CreateNewNode();
-        }
     }
 
     private async Task CreateNewNode()
@@ -125,12 +121,7 @@ public partial class MenuPanel
 
         StateHasChanged();
     }
-
-    private async Task OnInputFocus(FocusEventArgs args)
-    {
-        await Js.InvokeVoidAsync("scrollInputIntoView", _inputRef!.InputReference!.ElementReference);
-    }
-
+    
     private async Task ConfirmDelete(GraphNodeWithCount node)
     {
         var parameters = new DialogParameters { ["Node"] = node };
@@ -172,8 +163,39 @@ public partial class MenuPanel
             await ConfirmDelete(node);
         }
     }
+    private async Task HandleFilterChanged(string text)
+    {
+        _newNode.Title = text;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HandleAddNodeFromFilter((string Title, GraphNodeType Type) node)
+    {
+        _newNode.Title = node.Title;
+        _newNode.Type = node.Type;
+        await CreateNewNode();
+    }
+
+    private void Reset()
+    {
+        _footerMode = FooterMode.None;
+        _newNode = new GraphNode
+        {
+            Title = string.Empty,
+            Type = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.First()
+        };
+    }
+
     private class GraphNodeWithCount : GraphNode
     {
         public int ChildCount { get; set; }
     }
+
+    private enum FooterMode
+    {
+        None,
+        Filter,
+        NewNode
+    }
+
 }

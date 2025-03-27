@@ -1,3 +1,5 @@
+@namespace LowlandTech.Vylyr.Layout
+
 <MudPaper Class="menu-panel pa-0 h-100 d-flex flex-column" Elevation="0">
 
     <!-- Header -->
@@ -65,11 +67,44 @@
     </MudStack>
 
     <!-- Footer -->
-    <MudStack Class="px-2 pt-2 pb-3 border-top" AlignItems="AlignItems.End">
-        <MenuPanelActions />
+    <MudStack Class="px-2 pt-2 pb-3 border-top" AlignItems="@(_footerMode == FooterMode.None ? AlignItems.End : AlignItems.Stretch)">
+        @switch (_footerMode)
+        {
+            case FooterMode.Filter:
+                <MudCard Class="footer-card pa-4 mb-3">
+                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.subtitle1">Filter</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       Size="Size.Small"
+                                       OnClick="Reset" />
+                    </MudStack>
+                    <MudDivider />
+                    <FilterNode OnFilterChanged="HandleFilterChanged" Node="_newNode" />
+                </MudCard>
+                break;
+
+            case FooterMode.NewNode:
+                <MudCard Class="footer-card pa-4 mb-3">
+                    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.subtitle1">New item</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                       Size="Size.Small"
+                                       OnClick="Reset" />
+                    </MudStack>
+                    <MudDivider />
+                    <NewNode OnCreate="CreateNewNode"
+                             NodeTypes="_availableTypes" 
+                             Node="_newNode"/>
+                </MudCard>
+                break;
+
+            default:
+                <MenuPanelActions OnFilterClick="ShowFilterFooter"
+                                  OnNewNodeClick="ShowNewNodeFooter" />
+                break;
+        }
     </MudStack>
-    
-@*     <div class="px-2 pt-2 pb-3 border-top">
+    @*     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
             <MudTextField @ref="_inputRef"
                           @onfocus="OnInputFocus"

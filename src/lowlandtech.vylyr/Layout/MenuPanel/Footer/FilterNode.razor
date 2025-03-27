@@ -1,0 +1,13 @@
+@namespace LowlandTech.Vylyr.Layout
+
+<EditForm Model="this">
+    <MudTextField @ref="_inputRef" @bind-Value="Node!.Title"
+        Placeholder="Filter nodes..."
+        Adornment="Adornment.Start"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        Immediate="true"
+        Margin="Margin.Dense"
+        @onfocus="OnInputFocus"
+        OnKeyDown="HandleFilterChanged"
+        Class="w-100"/>
+</EditForm>
