@@ -1,4 +1,4 @@
-﻿namespace LowlandTech.Vylyr.Layout;
+﻿namespace LowlandTech.Vylyr.Infrastructure.Enums;
 
 public enum FooterMode
 {

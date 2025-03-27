@@ -1,4 +1,6 @@
-﻿namespace LowlandTech.Vylyr.Layout;
+﻿using LowlandTech.Vylyr.Infrastructure.Enums;
+
+namespace LowlandTech.Vylyr.Layout;
 
 public partial class MenuPanelActions
 {
