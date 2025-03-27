@@ -1,4 +1,9 @@
+global using LowlandTech.Vylyr.Components;
 global using LowlandTech.Vylyr.Infrastructure;
 global using LowlandTech.Vylyr.Models;
+global using LowlandTech.Vylyr.ViewModels;
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.JSInterop;
 global using MudBlazor;

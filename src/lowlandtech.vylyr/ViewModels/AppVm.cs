@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace LowlandTech.Vylyr.ViewModels;
+﻿namespace LowlandTech.Vylyr.ViewModels;
 
 /// <summary>
 /// Application-wide state manager. Controls layout state, theme, and navigation stack.
