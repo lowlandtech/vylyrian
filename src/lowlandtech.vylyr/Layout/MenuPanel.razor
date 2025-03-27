@@ -65,7 +65,11 @@
     </MudStack>
 
     <!-- Footer -->
-    <div class="px-2 pt-2 pb-3 border-top">
+    <MudStack Class="px-2 pt-2 pb-3 border-top" AlignItems="AlignItems.End">
+        <MenuPanelActions />
+    </MudStack>
+    
+@*     <div class="px-2 pt-2 pb-3 border-top">
         <EditForm Model="_newNode">
             <MudTextField @ref="_inputRef"
                           @onfocus="OnInputFocus"
@@ -98,7 +102,7 @@
                 </MudStack>
             }
         </EditForm>
-    </div>
+    </div> *@
 
 </MudPaper>
 <style>

@@ -1,0 +1,27 @@
+<MudStack Class="fab-container" @onmouseleave="() => Expanded = false" Row="false" AlignItems="AlignItems.Center">
+    @* FLYOUT ACTIONS — rendered AFTER so they appear ABOVE *@
+    @if (Expanded)
+    {
+        <MudStack Row="false" AlignItems="AlignItems.Start" Justify="Justify.SpaceAround" Spacing="2">
+            <MudFab StartIcon="@Icons.Material.Filled.AddCircle"
+                    Color="Color.Tertiary"
+                    Size="Size.Small"
+                    Class="fab-action"
+                    OnClick="HandleNewNodeClick" />
+
+            <MudFab StartIcon="@Icons.Material.Filled.FilterList"
+                    Color="Color.Secondary"
+                    Size="Size.Small"
+                    Class="fab-action"
+                    OnClick="HandleFilterClick" />
+        </MudStack>
+    }
+
+    @* MAIN FAB — rendered LAST so it's lowest in the reverse column *@
+    <MudFab StartIcon="@Icons.Material.Filled.MoreVert"
+            Color="Color.Primary"
+            Size="Size.Medium"
+            Class="fab-main"
+            OnClick="ToggleExpand"
+            @onmouseenter="() => Expanded = true" />
+</MudStack>
