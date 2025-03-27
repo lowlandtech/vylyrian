@@ -2,22 +2,24 @@
 
 public partial class MenuPanelActions
 {
-    [Parameter] public EventCallback OnFilterClick { get; set; }
-    [Parameter] public EventCallback OnNewNodeClick { get; set; }
+    [Parameter] public EventCallback<FooterMode> OnFooterAction { get; set; }
+    [Parameter] public FooterMode CurrentFooterMode { get; set; }
 
-    private bool Expanded = false;
+    private bool _expanded = false;
 
-    private void ToggleExpand() => Expanded = !Expanded;
+    private void ToggleExpand() => _expanded = !_expanded;
 
     private async Task HandleFilterClick()
     {
-        Expanded = false;
-        await OnFilterClick.InvokeAsync();
+        _expanded = false;
+        CurrentFooterMode = FooterMode.Filter;
+        await OnFooterAction.InvokeAsync(CurrentFooterMode);
     }
 
     private async Task HandleNewNodeClick()
     {
-        Expanded = false;
-        await OnNewNodeClick.InvokeAsync();
+        _expanded = false;
+        CurrentFooterMode = FooterMode.NewNode;
+        await OnFooterAction.InvokeAsync(CurrentFooterMode);
     }
 }

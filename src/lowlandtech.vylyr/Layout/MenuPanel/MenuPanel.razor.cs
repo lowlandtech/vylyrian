@@ -2,7 +2,7 @@
 
 public partial class MenuPanel
 {
-    private const string CardClasses = "footer-card pa-4 mb-3";
+    private const string CardClasses = "footer-card pa-2 mb-2";
 
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
@@ -17,23 +17,16 @@ public partial class MenuPanel
     private List<GraphNodeType> _availableTypes = [];
     private List<GraphNodeWithCount>? _children;
 
-    private GraphNodeType? _selectedType;
     private GraphNode _newNode = new();
-    private FooterMode _footerMode = FooterMode.None;
 
-    private void ShowFilterFooter() => _footerMode = FooterMode.Filter;
-    private void ShowNewNodeFooter() => _footerMode = FooterMode.NewNode;
+    [Parameter] public FooterMode CurrentFooterMode { get; set; }
+    [Parameter] public EventCallback OnResetFooter { get; set; }
 
     private List<GraphNodeWithCount> FilteredChildren =>
         string.IsNullOrWhiteSpace(_newNode.Title)
             ? _children ?? []
             : _children?.Where(c =>
                   c.Title.Contains(_newNode.Title, StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
-
-    private bool CanCreateNode =>
-        !string.IsNullOrWhiteSpace(_newNode.Title)
-        && _children != null
-        && !_children.Any(c => string.Equals(c.Title, _newNode.Title, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,9 +170,8 @@ public partial class MenuPanel
     {
         _isHidingFooter = true;
         await Task.Delay(250); // Match animation duration
-        _footerMode = FooterMode.None;
+        await OnResetFooter.InvokeAsync();
         _isHidingFooter = false;
-
         _newNode = new GraphNode
         {
             Title = string.Empty,
@@ -192,11 +184,6 @@ public partial class MenuPanel
         public int ChildCount { get; set; }
     }
 
-    private enum FooterMode
-    {
-        None,
-        Filter,
-        NewNode
-    }
+
 
 }

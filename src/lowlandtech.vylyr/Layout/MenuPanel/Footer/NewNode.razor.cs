@@ -2,10 +2,11 @@
 
 public partial class NewNode : ComponentBase
 {
+    [Parameter] public List<GraphNodeType> NodeTypes { get; set; } = [];
     [Inject] private IJSRuntime Js { get; set; } = default!;
     [Parameter] public EventCallback OnCreate { get; set; }
-    [Parameter] public List<GraphNodeType> NodeTypes { get; set; } = [];
     [Parameter] public GraphNode? Node { get; set; }
+
     private MudTextField<string>? _inputRef;
 
     private async Task OnInputFocus(FocusEventArgs args)
@@ -21,7 +22,7 @@ public partial class NewNode : ComponentBase
 
     private async Task CreateNode()
     {
-        if (!string.IsNullOrWhiteSpace(Node?.Title) && Node.Type is not null)
+        if (!string.IsNullOrWhiteSpace(Node?.Title))
         {
             await OnCreate.InvokeAsync(Node);
             await _inputRef!.FocusAsync();
@@ -30,6 +31,6 @@ public partial class NewNode : ComponentBase
 
     protected override void OnInitialized()
     {
-        Node.Type = NodeTypes.FirstOrDefault(t => t.Id == "list") ?? NodeTypes.First();
+        Node!.Type = NodeTypes.FirstOrDefault(t => t.Id == "list") ?? NodeTypes.First();
     }
 }

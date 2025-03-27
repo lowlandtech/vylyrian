@@ -1,22 +1,22 @@
 @namespace LowlandTech.Vylyr.Layout
 
-<MudStack Class="fab-container" @onmouseleave="() => Expanded = false" Row="false" AlignItems="AlignItems.Center">
+<MudStack Class="fab-container" @onmouseleave="() => _expanded = false" Row="false" AlignItems="AlignItems.Center">
     @* FLYOUT ACTIONS — rendered AFTER so they appear ABOVE *@
-    @if (Expanded)
+    @if (_expanded)
     {
         <MudStack Row="false" AlignItems="AlignItems.Start" Justify="Justify.SpaceAround" Spacing="2">
             <MudFab StartIcon="@Icons.Material.Filled.AddCircle"
                     Color="Color.Tertiary"
                     Size="Size.Small"
-                    Class="@(Expanded ? "fab-action show" : "fab-action")"
-                    Style="transition-delay: 0.05s"
+                    Class="@(_expanded ? "fab-action show" : "fab-action")"
+                    Style="transition-delay: 1s"
                     OnClick="HandleNewNodeClick" />
 
             <MudFab StartIcon="@Icons.Material.Filled.FilterList"
                     Color="Color.Secondary"
                     Size="Size.Small"
-                    Class="@(Expanded ? "fab-action show" : "fab-action")"
-                    Style="transition-delay: 0.1s"
+                    Class="@(_expanded ? "fab-action show" : "fab-action")"
+                    Style="transition-delay: 0.5s"
                     OnClick="HandleFilterClick" />
         </MudStack>
     }
@@ -27,5 +27,35 @@
             Size="Size.Medium"
             Class="fab-main"
             OnClick="ToggleExpand"
-            @onmouseenter="() => Expanded = true" />
+            @onmouseenter="() => _expanded = true" />
 </MudStack>
+<style>
+    .fab-container {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        z-index: 1100;
+    }
+
+    .fab-main {
+        z-index: 1110;
+    }
+
+    .fab-action {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+    }
+
+    .fab-action.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+</style>

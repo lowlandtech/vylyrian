@@ -11,9 +11,17 @@
                     CurrentNode="App.NavStack[i]"
                     OnNavigate="App.PushNode"
                     OnBack="App.PopNode"
-                    ShowBack="@(i > 0)" />
+                    ShowBack="@(i > 0)"
+                    CurrentFooterMode="_footerMode"
+                    OnResetFooter="ResetFooterMode"/>
             }
         </div>
+        @if (_footerMode == FooterMode.None)
+        {
+            <MenuPanelActions OnFooterAction="SetFooterMode"
+                              CurrentFooterMode="_footerMode"/>
+        }
+
     </MudPaper>
 }
 else
@@ -22,6 +30,18 @@ else
 }
 
 @code {
+    private FooterMode _footerMode = FooterMode.None;
+
+    private void SetFooterMode(FooterMode mode)
+    {
+        _footerMode = mode;
+    }
+
+    private void ResetFooterMode()
+    {
+        _footerMode = FooterMode.None;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         App.OnChange += ()=> InvokeAsync(StateHasChanged);
