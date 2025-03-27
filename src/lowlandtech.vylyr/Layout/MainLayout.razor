@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject AppVm App
 
 <MudBreakpointProvider OnBreakpointChanged="@HandleBreakpointChanged" />
 <MudThemeProvider Theme="@App.Theme" IsDarkMode="@App.IsDarkMode" />
@@ -10,13 +9,13 @@
 <MudLayout>
     <!-- AppBar -->
     <MudAppBar Elevation="1" Dense="true">
-        <MudIconButton 
-            Color="Color.Inherit"
-            Class="ml-n4 mr-1 drawer-toggle"
-            Style="transition: transform 0.3s ease;"
-            OnClick="@App.ToggleDrawer">
-            <MudIcon Icon="@_drawerIcon" Class="drawer-icon" />
+        <MudIconButton Color="Color.Inherit"
+                       Class="ml-n4 mr-1"
+                       OnClick="@App.ToggleDrawer">
+            <MudIcon Icon="@DrawerIcon"
+                     Class="@(App.DrawerOpen ? "drawer-icon rotate-icon" : "drawer-icon")" />
         </MudIconButton>
+
         <MudText Typo="Typo.h5" Class="ml-3">Vylyr</MudText>
         <MudSpacer />
         <MudIconButton Icon="@App.DarkLightModeButtonIcon"
@@ -41,31 +40,6 @@
         @Body
     </MudMainContent>
 </MudLayout>
-
-@code {
-    private string _drawerIcon => App.DrawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu;
-
-    protected override void OnInitialized()
-    {
-        App.OnChange += () => InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        App.OnChange -= () => InvokeAsync(StateHasChanged);
-    }
-
-    public Task HandleBreakpointChanged(Breakpoint breakpoint)
-    {
-        if (App.IsNativeMobile) return Task.CompletedTask;
-
-        App.IsMobile = breakpoint <= Breakpoint.Sm;
-        App.DrawerOpen = !App.IsMobile;
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
-}
-
 <style>
     @@media (max-width: 960px) {
         .mud-drawer-custom.mud-drawer--open {
@@ -115,8 +89,12 @@
         transform: rotate(90deg);
     }
 
-</style>
+    .rotate-icon {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
 
+</style>
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
