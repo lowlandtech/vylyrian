@@ -169,13 +169,6 @@ public partial class MenuPanel
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task HandleAddNodeFromFilter((string Title, GraphNodeType Type) node)
-    {
-        _newNode.Title = node.Title;
-        _newNode.Type = node.Type;
-        await CreateNewNode();
-    }
-
     private void Reset()
     {
         _footerMode = FooterMode.None;
