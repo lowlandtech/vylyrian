@@ -2,6 +2,8 @@
 
 public partial class MenuPanel
 {
+    private const string CardClasses = "footer-card pa-4 mb-3";
+
     [Parameter] public GraphNode CurrentNode { get; set; } = default!;
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
@@ -169,9 +171,15 @@ public partial class MenuPanel
         await InvokeAsync(StateHasChanged);
     }
 
-    private void Reset()
+    private bool _isHidingFooter = false;
+
+    private async Task Reset()
     {
+        _isHidingFooter = true;
+        await Task.Delay(250); // Match animation duration
         _footerMode = FooterMode.None;
+        _isHidingFooter = false;
+
         _newNode = new GraphNode
         {
             Title = string.Empty,

@@ -71,7 +71,7 @@
         @switch (_footerMode)
         {
             case FooterMode.Filter:
-                <MudCard Class="footer-card pa-4 mb-3">
+                <MudCard Class="@(_isHidingFooter ? $"{CardClasses} slide-out-bottom" : $"{CardClasses} slide-in-bottom")">
                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.subtitle1">Filter</MudText>
                         <MudIconButton Icon="@Icons.Material.Filled.Close"
@@ -84,7 +84,7 @@
                 break;
 
             case FooterMode.NewNode:
-                <MudCard Class="footer-card pa-4 mb-3">
+                <MudCard Class="footer-card pa-4 mb-3 slide-in-bottom">
                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.subtitle1">New item</MudText>
                         <MudIconButton Icon="@Icons.Material.Filled.Close"
@@ -160,4 +160,35 @@
         width: 100%;
         flex-shrink: 0;
     }
+
+    @@keyframes slideInBottom {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .slide-in-bottom {
+        animation: slideInBottom 0.25s ease-out;
+    }
+
+    @@keyframes slideOutBottom {
+        from {
+        transform: translateY(0);
+        opacity: 1;
+        }
+        to {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+    }
+
+    .slide-out-bottom {
+        animation: slideOutBottom 0.25s ease-in;
+    }
+
 </style>

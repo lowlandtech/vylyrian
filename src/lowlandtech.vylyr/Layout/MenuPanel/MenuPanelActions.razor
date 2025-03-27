@@ -8,13 +8,15 @@
             <MudFab StartIcon="@Icons.Material.Filled.AddCircle"
                     Color="Color.Tertiary"
                     Size="Size.Small"
-                    Class="fab-action"
+                    Class="@(Expanded ? "fab-action show" : "fab-action")"
+                    Style="transition-delay: 0.05s"
                     OnClick="HandleNewNodeClick" />
 
             <MudFab StartIcon="@Icons.Material.Filled.FilterList"
                     Color="Color.Secondary"
                     Size="Size.Small"
-                    Class="fab-action"
+                    Class="@(Expanded ? "fab-action show" : "fab-action")"
+                    Style="transition-delay: 0.1s"
                     OnClick="HandleFilterClick" />
         </MudStack>
     }
