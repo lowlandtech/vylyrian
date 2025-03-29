@@ -4,6 +4,7 @@ public partial class MenuPanelActions
 {
     [Parameter] public EventCallback<FooterMode> OnFooterAction { get; set; }
     [Parameter] public FooterMode CurrentFooterMode { get; set; }
+    [Parameter] public EventCallback OnNewNode { get; set; }
 
     private bool _expanded = false;
 
@@ -20,6 +21,7 @@ public partial class MenuPanelActions
     {
         _expanded = false;
         CurrentFooterMode = FooterMode.NewNode;
+        await OnNewNode.InvokeAsync();
         await OnFooterAction.InvokeAsync(CurrentFooterMode);
     }
 }

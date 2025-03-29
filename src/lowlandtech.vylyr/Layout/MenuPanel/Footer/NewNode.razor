@@ -1,31 +1,35 @@
 @namespace LowlandTech.Vylyr.Layout
 
-<EditForm Model="Node">
-    <MudTextField @ref="_inputRef"
-        @bind-Value="Node!.Title"
-        Placeholder="enter title..."
-        Adornment="Adornment.Start"
-        AdornmentIcon="@Icons.Material.Filled.Edit"
-        Immediate="true"
-        Margin="Margin.Dense"
-        Class="w-100"
-        @onfocus="OnInputFocus"
-        OnKeyDown="HandleEnter" />
-
-    <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Class="mt-2">
-        <MudSelect T="GraphNodeType" @bind-Value="Node!.Type" Dense="true" Class="flex-grow-1">
-            @foreach (var type in NodeTypes)
-            {
-                <MudSelectItem Value="@type">@type.Label</MudSelectItem>
-            }
-        </MudSelect>
-
-        <MudButton StartIcon="@Icons.Material.Filled.AddCircle"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="CreateNode"
-                   Disabled="@string.IsNullOrWhiteSpace(Node?.Title)">
-            Create
-        </MudButton>
-    </MudStack>
-</EditForm>
+<MudPaper Class="pa-4">
+    <EditForm Model="Node">
+        <MudStack Row="false" AlignItems="AlignItems.Stretch" Spacing="2">
+            <MudTextField 
+                @ref="_inputRef"
+                @bind-Value="Node!.Title"
+                Placeholder="enter title..."
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Edit"
+                Immediate="true"
+                Margin="Margin.Dense"
+                Class="w-100"
+                @onfocus="OnInputFocus"
+                OnKeyDown="HandleEnter" />
+            <MudSelect T="GraphNodeType" @bind-Value="Node!.Type" Dense="true" Class="flex-grow-1">
+                @foreach (var type in NodeTypes)
+                {
+                    <MudSelectItem Value="@type">@type.Label</MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+        <MudStack Row="true" AlignItems="AlignItems.End" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
+            <MudButton OnClick="@(()=>MudDialog!.Cancel())">Cancel</MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.AddCircle"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="CreateNode"
+                       Disabled="@string.IsNullOrWhiteSpace(Node?.Title)">
+                Create
+            </MudButton>
+        </MudStack>
+    </EditForm>
+</MudPaper>

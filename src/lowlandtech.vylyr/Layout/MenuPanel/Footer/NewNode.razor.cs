@@ -4,8 +4,9 @@ public partial class NewNode : ComponentBase
 {
     [Parameter] public List<GraphNodeType> NodeTypes { get; set; } = [];
     [Inject] private IJSRuntime Js { get; set; } = default!;
-    [Parameter] public EventCallback OnCreate { get; set; }
+    [Parameter] public EventCallback<GraphNode> OnCreate { get; set; }
     [Parameter] public GraphNode? Node { get; set; }
+    [CascadingParameter] private IMudDialogInstance? MudDialog { get; set; }
 
     private MudTextField<string>? _inputRef;
 
@@ -25,7 +26,7 @@ public partial class NewNode : ComponentBase
         if (!string.IsNullOrWhiteSpace(Node?.Title))
         {
             await OnCreate.InvokeAsync(Node);
-            await _inputRef!.FocusAsync();
+            MudDialog!.Close();
         }
     }
 

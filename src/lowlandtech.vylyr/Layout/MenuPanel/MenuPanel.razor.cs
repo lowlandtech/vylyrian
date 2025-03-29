@@ -8,6 +8,8 @@ public partial class MenuPanel
     [Parameter] public EventCallback<GraphNode> OnNavigate { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
     [Parameter] public bool ShowBack { get; set; } = true;
+    [Parameter] public FooterMode CurrentFooterMode { get; set; }
+    [Parameter] public EventCallback OnResetFooter { get; set; }
 
     [Inject] private IDialogService DialogService { get; set; } = default!;
     [Inject] private GraphContext Db { get; set; } = default!;
@@ -15,17 +17,15 @@ public partial class MenuPanel
     [Inject] private AppVm App { get; set; } = default!;
 
     private List<GraphNodeType> _availableTypes = [];
-    private List<GraphNodeWithCount>? _children;
+    private List<GraphNodeWithCount>? Children { get; set; } 
 
     private GraphNode _newNode = new();
-
-    [Parameter] public FooterMode CurrentFooterMode { get; set; }
-    [Parameter] public EventCallback OnResetFooter { get; set; }
+    private bool _isHidingFooter = false;
 
     private List<GraphNodeWithCount> FilteredChildren =>
         string.IsNullOrWhiteSpace(_newNode.Title)
-            ? _children ?? []
-            : _children?.Where(c =>
+            ? Children ?? []
+            : Children?.Where(c =>
                   c.Title.Contains(_newNode.Title, StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
 
     protected override async Task OnInitializedAsync()
@@ -44,7 +44,7 @@ public partial class MenuPanel
 
     private async Task LoadChildrenAsync()
     {
-        _children = await Db.Edges
+        Children = await Db.Edges
             .Where(e => e.FromId == CurrentNode.Id)
             .Select(e => e.To)
             .Select(n => new GraphNodeWithCount
@@ -98,8 +98,8 @@ public partial class MenuPanel
 
         await Db.SaveChangesAsync();
 
-        _children ??= new();
-        _children.Add(new GraphNodeWithCount
+        Children ??= new();
+        Children.Add(new GraphNodeWithCount
         {
             Id = newNode.Id,
             Title = newNode.Title,
@@ -147,7 +147,7 @@ public partial class MenuPanel
 
         await Db.SaveChangesAsync();
 
-        _children?.RemoveAll(c => c.Id == node.Id);
+        Children?.RemoveAll(c => c.Id == node.Id);
         StateHasChanged();
     }
 
@@ -158,14 +158,13 @@ public partial class MenuPanel
             await ConfirmDelete(node);
         }
     }
+
     private async Task HandleFilterChanged(string text)
     {
         _newNode.Title = text;
         await InvokeAsync(StateHasChanged);
     }
-
-    private bool _isHidingFooter = false;
-
+    
     private async Task Reset()
     {
         _isHidingFooter = true;
@@ -178,12 +177,4 @@ public partial class MenuPanel
             Type = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.First()
         };
     }
-
-    private class GraphNodeWithCount : GraphNode
-    {
-        public int ChildCount { get; set; }
-    }
-
-
-
 }
