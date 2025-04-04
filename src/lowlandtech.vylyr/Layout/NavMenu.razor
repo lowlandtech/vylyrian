@@ -10,14 +10,14 @@
                     OnNavigate="App.PushNode"
                     OnBack="App.PopNode"
                     ShowBack="@(i > 0)"
-                    CurrentFooterMode="_footerMode"
+                    CurrentFooterMode="NavVm.FooterMode"
                     OnResetFooter="ResetFooterMode"/>
             }
         </div>
-        @if (_footerMode == FooterMode.None)
+        @if (NavVm.FooterMode == FooterMode.None)
         {
             <MenuPanelActions OnNewNode="OpenNewNodeDialog"
-                              CurrentFooterMode="_footerMode"/>
+                              CurrentFooterMode="NavVm.FooterMode" />
         }
 
     </MudPaper>

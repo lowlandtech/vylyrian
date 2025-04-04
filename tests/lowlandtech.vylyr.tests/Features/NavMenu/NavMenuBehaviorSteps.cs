@@ -1,7 +1,9 @@
-﻿namespace LowlandTech.Vylyr.Tests.Features;
+﻿using System;
+
+namespace LowlandTech.Vylyr.Features.NavMenu;
 
 [Binding]
-public class NavMenuSteps
+public class NavMenuBehaviorSteps : TestContext
 {
     private readonly NavMenuVm _vm = new();
     private List<GraphNodeType> _nodeTypes = new();
@@ -13,9 +15,41 @@ public class NavMenuSteps
     }
 
     [Given("the navigation menu is visible")]
-    public void GivenTheNavigationMenuIsVisible()
+    public async Task GivenTheNavigationMenuIsVisible()
     {
-        // Placeholder - UI concern
+        JSInterop.Mode = JSRuntimeMode.Loose;
+        Services.AddMudServices();
+        Services.AddSingleton<AppVm>();
+        Services.AddDbContext<GraphContext>(options =>
+            {
+                options.UseInMemoryDatabase("VylyrGraph");
+            });
+        Services.AddSingleton<NavMenuVm>(_=>_vm); // Inject the VM into component
+        using var scope = Services.BuildServiceProvider().CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<GraphContext>();
+        await db.Database.EnsureCreatedAsync();
+        await db.UseCaseData();
+        
+        var cut = RenderComponent<NavMenuTestComponent>(); // Cut = Component Under Test
+
+        // Act
+        _vm.ResetFooter(); // Set FooterMode to None
+        cut.Render(); // Re-render to reflect state change
+
+        // Assert
+        cut.Markup.Should().Contain("mud-fab"); // Or look for icon/text
+    }
+
+    [Then("the default type should be {string}")]
+    public void ThenTheDefaultTypeShouldBe(string list)
+    {
+
+    }
+
+    [Then("the FooterMode should reset to None")]
+    public void ThenTheFooterModeShouldResetToNone()
+    {
+
     }
 
     [Given("the FooterMode is None")]
@@ -37,7 +71,7 @@ public class NavMenuSteps
     }
 
     [When("the user clicks the filter FAB")]
-    public void WhenTheUserClicksTheFilterFAB()
+    public void WhenTheUserClicksTheFilterFab()
     {
         _vm.SetFooterMode(FooterMode.Filter);
     }
@@ -100,10 +134,10 @@ public class NavMenuSteps
     public void GivenTheUserHasSubmittedANewNode()
     {
         _nodeTypes = new List<GraphNodeType>
-        {
-            new GraphNodeType { Id = "list", Label = "List" },
-            new GraphNodeType { Id = "note", Label = "Note" }
-        };
+            {
+                new GraphNodeType { Id = "list", Label = "List" },
+                new GraphNodeType { Id = "note", Label = "Note" }
+            };
 
         _vm.ResetNewNode(_nodeTypes);
         _vm.NewNode.Title = "My new node";
@@ -126,10 +160,10 @@ public class NavMenuSteps
     public void GivenNodeTypesAreProvided()
     {
         _nodeTypes = new List<GraphNodeType>
-        {
-            new GraphNodeType { Id = "list", Label = "List" },
-            new GraphNodeType { Id = "note", Label = "Note" }
-        };
+            {
+                new GraphNodeType { Id = "list", Label = "List" },
+                new GraphNodeType { Id = "note", Label = "Note" }
+            };
     }
 
     [When("the NewNode or FilterNode component is shown")]

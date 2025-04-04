@@ -1,14 +1,28 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>LowlandTech.Vylyr</RootNamespace>
+    <RazorLangVersion>7.0</RazorLangVersion>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <IncludeRazorContentInPack>false</IncludeRazorContentInPack>
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Bunit" />
+    <Using Include="Bunit.TestDoubles" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="NUnit" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove=".gitignore" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="bunit" Version="1.39.5" />
+    <PackageReference Include="bunit.web" Version="1.39.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Reqnroll.NUnit" Version="2.4.0" />
     <PackageReference Include="nunit" Version="4.3.2" />

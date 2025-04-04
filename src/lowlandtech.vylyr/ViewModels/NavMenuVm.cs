@@ -32,4 +32,6 @@ public class NavMenuVm
 
     public event Action? OnChange;
     private void NotifyChanged() => OnChange?.Invoke();
+
+    public bool ShowFab => FooterMode == FooterMode.None;
 }
