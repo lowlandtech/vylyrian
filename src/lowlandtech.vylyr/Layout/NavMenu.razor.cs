@@ -7,17 +7,15 @@ public partial class NavMenu
     [Inject] public NavMenuVm NavVm { get; set; } = default!;
     [Inject] public GraphContext Db { get; set; } = default!;
 
-    private FooterMode _footerMode = FooterMode.None;
     private List<GraphNodeType> _availableTypes = [];
     private List<GraphNodeWithCount>? _children;
-    private GraphNode _newNode = new();
 
     private async Task OpenNewNodeDialog()
     {
         var parameters = new DialogParameters
         {
             { "NodeTypes", _availableTypes },
-            { "Node", _newNode },
+            { "Node", NavVm.NewNode },
             { "OnCreate", EventCallback.Factory.Create<GraphNode>(this, HandleCreateNode) }
         };
 
@@ -27,14 +25,14 @@ public partial class NavMenu
 
     private async Task HandleCreateNode()
     {
-        if (string.IsNullOrWhiteSpace(_newNode.Title))
+        if (string.IsNullOrWhiteSpace(NavVm.NewNode.Title))
             return;
 
         var newNode = new GraphNode
         {
             Id = Guid.NewGuid().ToString(),
-            Title = _newNode.Title,
-            Type = _newNode.Type
+            Title = NavVm.NewNode.Title,
+            Type = NavVm.NewNode.Type
         };
 
         Db.Nodes.Add(newNode);
@@ -52,23 +50,19 @@ public partial class NavMenu
         });
 
         // Reset the model to refresh the form
-        _newNode = new GraphNode
-        {
-            Title = string.Empty,
-            Type = _availableTypes.FirstOrDefault(t => t.Id == "list") ?? _availableTypes.First()
-        };
+        NavVm.ResetNewNode(_availableTypes);
 
         StateHasChanged();
     }
 
     private void SetFooterMode(FooterMode mode)
     {
-        _footerMode = mode;
+        NavVm.SetFooterMode(mode);
     }
 
     private void ResetFooterMode()
     {
-        _footerMode = FooterMode.None;
+        NavVm.ResetFooter();
     }
 
     protected override async Task OnInitializedAsync()
@@ -78,6 +72,7 @@ public partial class NavMenu
 
         App.OnChange += () => InvokeAsync(StateHasChanged);
         App.OnMenuChange += () => InvokeAsync(StateHasChanged);
+        NavVm.OnChange += () => InvokeAsync(StateHasChanged);
         await App.InitMenuAsync(Db);
     }
 
@@ -85,5 +80,6 @@ public partial class NavMenu
     {
         App.OnChange -= () => InvokeAsync(StateHasChanged);
         App.OnMenuChange -= () => InvokeAsync(StateHasChanged);
+        NavVm.OnChange -= () => InvokeAsync(StateHasChanged);
     }
 }
